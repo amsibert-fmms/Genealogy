@@ -1,0 +1,124 @@
+1. Core Architectural Vision
+Layer	Purpose	Django / Tech Concept
+Domain layer (GEDCOM X core)	Models Person, Relationship, Fact, Place, Source — mirroring GEDCOM X	Django ORM, core, persons, places, sources apps
+Data ingestion & interchange	Import/export GEDCOM X JSON/XML, legacy GEDCOM 5.5.1, FamilySearch, Ancestry, etc.	Parsers in separate importers app; DRF serializers for interchange
+Reconciliation engine	Detect and merge duplicate persons, places, sources	Dedicated matching app with fuzzy matching + heuristics
+Normalization / resolution	Unify variant names, dates, and places	Use your PlaceResolution + text normalization services
+Validation & auditing	Enforce spec rules and detect inconsistencies	Django signals, model clean() methods, and custom validators
+Presentation layer	Browser UI, REST API, later React/Vue front end	DRF + Tailwind templates, eventual SPAs
+Integration layer	APIs for external genealogy sites and open data	REST clients, background Celery tasks for sync
+Monitoring & error checking	Logging, report dashboard, error metrics	Django Admin, Sentry, Prometheus, or built-in validation reports
+⚙️ 2. Recommended Django App Ecosystem
+App	Role	Key Models/Features
+core	Base models, URI & audit mixins, global config	BaseModel, AuditMixin, URI validation
+vocab	Controlled vocabularies per GEDCOM X	VocabTerm, fixtures for Birth, Death, Gender, etc.
+persons	Person, Fact, Name, Gender	Core genealogical entities
+relationships	Parent-child, couple, other links	Supports multi-person relationship graphs
+places	PlaceDescription, PlaceResolution	Geospatial + jurisdiction hierarchy
+sources	SourceDescription, EvidenceReference	Citations, provenance, repository info
+importers	Handles file ingestion and schema mapping	GEDCOM X, GEDCOM 5.5.1, JSON, CSV adapters
+matching	Duplicate detection and entity merging	Fuzzy matching, scoring, conflict resolution
+validation	Rule engine for data integrity	Field and cross-object validation rules
+integration	External connectors (FamilySearch, etc.)	OAuth tokens, remote sync jobs
+ui (optional later)	Custom views/forms for data entry	Source-specific templates
+analytics (optional later)	Logs, dashboards, quality stats	Data completeness metrics
+🧠 3. Duplicate Detection & Merge Strategy
+
+Entity fingerprinting
+
+Use a combination of name tokens, birth dates, and normalized places.
+
+Store fingerprints in a separate table for quick similarity search.
+
+Fuzzy matching
+
+Use rapidfuzz or jellyfish for string similarity.
+
+Score pairs → threshold → candidate matches.
+
+Merge orchestration
+
+Human-in-the-loop or automatic rules:
+
+identical URIs → auto-merge
+
+conflicting dates → flag for review
+
+Store merge logs for audit.
+
+Conflict handling
+
+Keep original evidence facts intact.
+
+Create a new conclusion fact with provenance.
+
+📦 4. Import/Integration Framework
+
+Start by implementing a modular import pipeline:
+
+importers/
+ ├── gedcomx_adapter.py        # JSON/XML GEDCOM X
+ ├── gedcom_legacy_adapter.py  # GEDCOM 5.5.1 → normalized
+ ├── ancestry_adapter.py       # Web API ingestion
+ ├── familysearch_adapter.py   # OAuth & API integration
+ └── utils.py
+
+
+Each adapter should:
+
+Parse source format → internal Python dataclasses.
+
+Validate against GEDCOM X schema.
+
+Create or update database objects through Django ORM.
+
+🔍 5. Validation & Error Checking
+
+You can layer this in gradually:
+
+Level	Mechanism	Example
+Field	Model clean_fields()	Ensure date format validity
+Cross-model	Custom validator service	Person’s death date > birth date
+Global	validation app rule registry	Detect unlinked persons or orphan facts
+User feedback	Admin / dashboard	Show warnings or fix suggestions
+🌐 6. Online Hook-ins
+
+Start with one open API (like FamilySearch GEDCOM X or OpenArchives) to practice:
+
+Use requests or aiohttp for REST calls.
+
+Cache results locally.
+
+Store external URIs alongside internal ones (e.g., external_uri on Person).
+
+Later, expand to pluggable connectors with OAuth tokens in the integration app.
+
+🚦 7. Development Path for You
+
+Since you want to learn by hand, I’d suggest this progression:
+
+Build your core + persons + places apps manually.
+
+Import a small GEDCOM X JSON manually and map it to your models.
+
+Add the reconciliation logic (places, duplicate persons).
+
+Implement your first custom data entry form for one source type (like a census record).
+
+Introduce error-checking and reporting (admin + command).
+
+Add one integration adapter (e.g., FamilySearch import).
+
+Build a small REST API for CRUD access to Persons/Places.
+
+🚀 8. Long-term enhancements
+
+GraphDB overlay (optional): model kinship graphs in Neo4j or via Django-neomodel.
+
+Background jobs: Celery + Redis for imports and merge scans.
+
+Search: integrate Elasticsearch or PostgreSQL full-text for name/place search.
+
+Versioning: django-simple-history or your own revision tables.
+
+User access control: fine-grained sharing of trees and sources.
