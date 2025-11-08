@@ -1,83 +1,64 @@
-🧬 GeneaX Documentation Index
+# 🧬 GeneaX Documentation Index
 
-Welcome to GeneaX, a Django-based genealogy platform built for hands-on learning and strict GEDCOM X compliance.
+Welcome to **GeneaX**, a Django-based genealogy platform built for hands-on learning and strict GEDCOM X compliance.  
 This index lists all project documentation files — so you can pretend there’s order in the chaos.
 
+---
+
+## 📘 Core Documentation
+
+- [README](README.md) — Project overview, goals, and quick start guide.  
+- [ARCHITECTURE](ARCHITECTURE.md) — Django app structure, data flow, and dependency map.  
+- [FEATURES](FEATURES.md) — Feature list, roadmap, and phase breakdowns.  
+- [PROOF_STANDARD](PROOF_STANDARD.md) — The GeneaX Proof Standard — data verification and evidence scoring.  
+- [GEDCOMX_COMPLIANCE](GEDCOMX_COMPLIANCE.md) — Model mapping and schema compliance notes for GEDCOM X.  
+- [DATA_MODELS](DATA_MODELS.md) — Django model definitions for all core entities.  
+- [API_REFERENCE](API_REFERENCE.md) — REST API endpoints, parameters, and examples.  
+- [VALIDATION_RULES](VALIDATION_RULES.md) — Schema validation, proof checks, and error handling.  
+- [ROADMAP](ROADMAP.md) — Development milestones and version tracking.  
 
 ---
 
-📘 Core Documentation
+## 🧑‍💻 Developer Documentation
 
-File	Description
-
-README.md	Project overview, goals, and quick start guide.
-ARCHITECTURE.md	Django app structure, data flow, and dependency map.
-FEATURES.md	Feature list, roadmap, and phase breakdowns.
-PROOF_STANDARD.md	The GeneaX Proof Standard — data verification and evidence scoring.
-GEDCOMX_COMPLIANCE.md	Model mapping and schema compliance notes for GEDCOM X.
-DATA_MODELS.md	Django model definitions for all core entities.
-API_REFERENCE.md	REST API endpoints, parameters, and examples.
-VALIDATION_RULES.md	Schema validation, proof checks, and error handling.
-ROADMAP.md	Development milestones and version tracking.
-
-
+- [INSTALLATION](INSTALLATION.md) — Local environment setup and project dependencies.  
+- [CONFIGURATION](CONFIGURATION.md) — Environment variables, config files, and database setup.  
+- [CONTRIBUTING](CONTRIBUTING.md) — Contribution guidelines and branch naming.  
+- [TESTING](TESTING.md) — Unit tests, GEDCOM X fixtures, and CI setup.  
+- [DEPLOYMENT](DEPLOYMENT.md) — Deployment instructions (Docker, Gunicorn, etc.).  
+- [CHANGELOG](CHANGELOG.md) — Version history and release log.  
+- [SECURITY](SECURITY.md) — Security policy and vulnerability reporting.  
 
 ---
 
-🧑‍💻 Developer Documentation
+## 🧾 Data & Schema References
 
-File	Description
-
-INSTALLATION.md	Local environment setup and project dependencies.
-CONFIGURATION.md	Configuration files, environment variables, and database setup.
-CONTRIBUTING.md	Contribution guidelines, branch naming, and commit standards.
-TESTING.md	Unit tests, GEDCOM X fixtures, and CI setup.
-DEPLOYMENT.md	Deployment instructions (Docker, Gunicorn, etc.).
-CHANGELOG.md	Version history and release log.
-SECURITY.md	Security policy and vulnerability reporting.
-
-
+- [gedcomx-schema.json](../schemas/gedcomx-schema.json) — GEDCOM X JSON-LD reference schema.  
+- [geneax-proof-schema.json](../schemas/geneax-proof-schema.json) — Custom ProofStatement schema for GeneaX.  
+- [Examples Folder](../examples/) — Example data files in GEDCOM X and GeneaX JSON.  
+- [Fixtures Folder](../fixtures/) — Django test fixtures for local testing.  
 
 ---
 
-🧾 Data & Schema References
+## 🎨 UI & Frontend Documentation
 
-File	Description
-
-/schemas/gedcomx-schema.json	GEDCOM X JSON-LD reference schema.
-/schemas/geneax-proof-schema.json	Custom ProofStatement schema for GeneaX.
-/examples/	Example data files in GEDCOM X and GeneaX JSON.
-/fixtures/	Django test fixtures for local testing.
-
-
+- [STYLE_GUIDE](STYLE_GUIDE.md) — CSS/Tailwind structure, color palettes, and typography.  
+- [THEMING](THEMING.md) — Theming and customization guide (light/dark modes, color swaps).  
+- [COMPONENTS](COMPONENTS.md) — Reusable UI components — person cards, proof badges, tree layouts.  
+- [UX_GUIDELINES](UX_GUIDELINES.md) — UX philosophy and accessibility standards.  
+- [ICONOGRAPHY](ICONOGRAPHY.md) — Icon usage and standard meanings (relationship types, proof confidence, etc.).  
 
 ---
 
-🎨 UI & Frontend Documentation
+## 🧭 Meta & Reference
 
-File	Description
-
-STYLE_GUIDE.md	CSS/Tailwind structure, color palettes, and typography.
-THEMING.md	Theming and customization guide (light/dark modes, color swaps).
-COMPONENTS.md	Reusable UI components — person cards, proof badges, tree layouts.
-UX_GUIDELINES.md	UX philosophy, accessibility standards, and visualization patterns.
-ICONOGRAPHY.md	Icon usage and standard meanings (e.g., relationship types).
-
-
+- [VISION](VISION.md) — The “why” behind GeneaX — project philosophy and goals.  
+- [LICENSE](LICENSE.md) — License and usage permissions.  
+- [NOTES](NOTES.md) — Scratchpad for ideas, drafts, and developer muttering.
 
 ---
 
-🧭 Meta & Reference
-
-File	Description
-
-VISION.md	The “why” behind GeneaX — project philosophy and goals.
-LICENSE.md	License and usage permissions.
-NOTES.md	Miscellaneous notes, drafts, and ideas that didn’t fit elsewhere.
-
-
-
----
-
-Tip:
+**Tip:**  
 Keep this index updated or risk your repo turning into an archaeological site of half-written markdown.
+
+---
