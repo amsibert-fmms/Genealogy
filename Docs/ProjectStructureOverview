@@ -1,0 +1,22 @@
+Genealogy-main/
+├── .gitignore
+├── README.md
+├── manage.py
+├── requirements.txt
+│
+├── GeneaX/                      ← Django project configuration
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+└── genealogy/                   ← First Django app
+    ├── __init__.py
+    ├── admin.py
+    ├── apps.py
+    ├── models.py
+    ├── tests.py
+    ├── views.py
+    └── migrations/
+        └── __init__.py
