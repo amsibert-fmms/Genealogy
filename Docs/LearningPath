@@ -1,0 +1,89 @@
+Phase 1 – Foundation
+
+Goal: understand Django’s structure, ORM, and migrations.
+
+Create your project manually:
+
+django-admin startproject gedcomx_project
+cd gedcomx_project
+python manage.py startapp core
+
+
+In core.models, hand-write:
+
+BaseModel (with uri, timestamps)
+
+A URIField using Django validators or rfc3986
+
+A test Person table with name
+
+Run:
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+
+
+Explore the admin to see what migrations actually produce in your DB.
+
+🧱 Phase 2 – Relational modeling
+
+Goal: see how foreign keys and many-to-manys work.
+
+Add a separate places app with PlaceDescription and PlaceResolution.
+
+Create FK links manually.
+
+Observe migration dependencies between apps.
+
+Add a Fact model in persons with a place FK and test how cascading deletes behave.
+
+Use the Django shell (python manage.py shell_plus) to experiment with:
+
+p = Person.objects.create(uri="http://example.org/person/1", primary_name="John Doe")
+f = Fact.objects.create(person=p, type_uri="http://gedcomx.org/Birth")
+
+🔗 Phase 3 – Relationships and vocab
+
+Goal: learn model interlinking and controlled vocabularies.
+
+Manually add a VocabTerm table in a new vocab app.
+
+Populate it with a fixture (loaddata) for GEDCOM X URIs.
+
+Write queries that join facts to vocab terms.
+
+📜 Phase 4 – Evidence and sources
+
+Goal: see how one-to-many and optional references behave.
+
+Build the sources app with SourceDescription and EvidenceReference.
+
+Add an evidence foreign key to Fact manually, run migrations, and observe how Django rewrites the schema.
+
+🧠 Phase 5 – Place resolution logic
+
+Goal: get comfortable with management commands and services.
+
+Create a resolve_places.py command that populates PlaceResolution entries from raw text.
+
+Use pure Python functions first, no dependencies; later add fuzzy matching or PostGIS.
+
+🧩 Phase 6 – APIs or Admin
+
+Goal: see how to surface your data.
+
+Register models manually in admin.py and play with inline relations.
+
+Optionally, add Django REST Framework:
+
+pip install djangorestframework
+
+
+and build one serializer at a time.
+
+🧭 Phase 7 – Reflection
+
+When you’ve done all this, you’ll understand migrations, model relations, serialization, and query behavior deeply.
+At that point, you can safely refactor the project into the modular structure we outlined earlier — or even teach it.
