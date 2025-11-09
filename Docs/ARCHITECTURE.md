@@ -28,14 +28,14 @@ geneax/
 └── manage.py
 ```
 
-⚙️ Data Flow
-Input Layer
+## ⚙️ Data Flow
+1. Input Layer
 
 Data can be entered manually via Django admin or imported as GEDCOM X JSON-LD.
 
 Import pipeline validates data against the GEDCOM X schema and custom GeneaX rules.
 
-Core Processing
+1. Core Processing
 
 Validated entities are stored in the PostgreSQL database.
 
@@ -43,7 +43,7 @@ The proof app applies confidence scoring and creates ProofStatements.
 
 Any conflicts or low-confidence claims are automatically flagged.
 
-API Layer
+1. API Layer
 
 The REST API (Django REST Framework) exposes entities for external integration.
 
@@ -51,13 +51,13 @@ Supports CRUD operations, pagination, and filtering.
 
 API responses are fully JSON-LD compliant.
 
-Output Layer
+1. Output Layer
 
 Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.
 
 Visualization endpoints feed tree and timeline components in the UI.
 
-🧱 Core Components
+## 🧱 Core Components
 Component	Description
 core/	Foundational utilities, base models, and shared mixins.
 gedcomx/	Implements primary GEDCOM X entities and relationships.
@@ -66,7 +66,7 @@ api/	REST API endpoints, serializers, and viewsets.
 import_export/	Schema validation and GEDCOM X import/export logic.
 ui/	Templates, static assets, and CSS/Tailwind theming.
 
-🗃️ Database Design Summary
+## 🗃️ Database Design Summary
 Backend: PostgreSQL
 
 Schema: Normalized tables with JSON fields for flexible genealogical structures.
@@ -91,7 +91,7 @@ Document
 
 PlaceDescription
 
-🔗 Interoperability
+## 🔗 Interoperability
 GeneaX aligns with GEDCOM X’s data model and JSON-LD serialization principles:
 
 Each entity maps to a corresponding GEDCOM X type.
@@ -100,7 +100,7 @@ Imports and exports are schema-validated against the GEDCOM X JSON-LD spec.
 
 Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
 
-🧠 Design Principles
+## 🧠 Design Principles
 Transparency over convenience.
 Every relationship or assertion must trace back to a source or ProofStatement.
 
@@ -113,7 +113,7 @@ Readable code > clever code. Future-you deserves mercy.
 Loose coupling, strict validation.
 Apps can evolve independently, but all data must pass compliance checks.
 
-🚀 Future Extensions
+## 🚀 Future Extensions
 GraphQL API for advanced querying.
 
 Family tree and timeline visualization APIs.
