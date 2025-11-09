@@ -45,7 +45,7 @@ geneax/
     - Visualization endpoints feed tree and timeline components in the UI.
 
 ## 🧱 Core Components
-|Component	Description
+|Component | Description |
 |---------|-------------|
 | core/	| Foundational utilities, base models, and shared mixins. |
 | gedcomx/	| Implements primary GEDCOM X entities and relationships. |
