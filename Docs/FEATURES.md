@@ -31,7 +31,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 2. **Proof & Evidence System**
+### 3. **Proof & Evidence System**
 - Integration of the **GeneaX Proof Standard (GXPS)**.  
 - Confidence ratings for each claim (`certain`, `probable`, `possible`, `speculative`).  
 - ProofStatements linking claims to sources, analysis, and conflicts.  
@@ -42,7 +42,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 3. **Data Visualization**
+### 4. **Data Visualization**
 - Interactive family tree display (zoom, pan, expand, collapse).  
 - Timeline view of life events and relationships.  
 - Relationship graph visualization using D3.js or Cytoscape.  
@@ -52,7 +52,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 4. **Search & Discovery**
+### 5. **Search & Discovery**
 - Full-text and filtered search for people, events, and sources.  
 - Phonetic (Soundex / Metaphone) surname matching.  
 - Fuzzy duplicate detection for potential record merges.  
@@ -62,7 +62,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 5. **Import / Export / Interoperability**
+### 6. **Import / Export / Interoperability**
 - GEDCOM X JSON-LD import/export (core).  
 - Legacy GEDCOM 5.5.1 converter (optional).  
 - CSV import for quick testing.  
@@ -72,7 +72,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 6. **User Accounts & Collaboration**
+### 7. **User Accounts & Collaboration**
 - Django-based authentication system.  
 - Personal “workspaces” for building private family trees.  
 - Shared project editing with role-based permissions.  
@@ -82,7 +82,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 7. **Validation & Quality Tools**
+### 8. **Validation & Quality Tools**
 - Schema validation for GEDCOM X compliance.  
 - Proof integrity checks (missing sources, unresolved conflicts).  
 - Research completeness dashboard.  
@@ -92,7 +92,7 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
-### 8. **Customization & UI**
+### 9. **Customization & UI**
 - Tailwind CSS framework with a fully customizable theme.  
 - Light/dark mode toggle.  
 - Configurable layout and typography via CSS variables.  
