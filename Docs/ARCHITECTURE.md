@@ -19,6 +19,7 @@ geneax/
 ├── core/              # Shared utilities, mixins, base models
 ├── gedcomx/           # GEDCOM X data entities (Person, Relationship, etc.)
 ├── proof/             # ProofStandard logic (ProofStatement, evidence scoring)
+├── relationships/     # FamilyAppearance, Relationship extensions, cross-references
 ├── api/               # REST API endpoints (DRF)
 ├── import_export/     # Import/export and schema validation logic
 ├── ui/                # Templates, static files, and front-end integration
@@ -48,15 +49,19 @@ geneax/
 - Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.  
 - Visualization endpoints feed tree and timeline components in the UI.
 
+**5. Relationship Resolution**
+- The relationships module links Person entities across sources using extended relationship types and FamilyAppearance records. This allows complex multi-source mappings such as cousin marriages, in-law references, and cross-book property transactions to be modeled without duplication.
+
 ## 🧱 Core Components
 |Component | Description |
 |-----:|-----------------|
 | **core/**	| Foundational utilities, base models, and shared mixins. |
 | **gedcomx/**	| Implements primary GEDCOM X entities and relationships. |
-| **proof/** | Houses the GeneaX Proof Standard implementation. |
+| **proof/** | Contains the GeneaX Proof Standard implementation. |
 | **api/** | REST API endpoints, serializers, and viewsets. |
 | **import_export/** | Schema validation and GEDCOM X import/export logic. |
 | **ui/** | Templates, static assets, and CSS/Tailwind theming. |
+| **relationships/** |	Extended GEDCOM X relationships, cross-references, and contextual family appearances. |
 
 ## 🗃️ Database Design Summary
 - **Backend:** PostgreSQL
@@ -65,9 +70,11 @@ geneax/
 - **Major Entities:**
     - Person
     - Relationship
+    - FamilyAppearanceRole
     - Event
     - Fact
     - SourceDescription
+    - SourceCrossReference
     - ProofStatement
     - Document
     - PlaceDescription
@@ -77,6 +84,7 @@ GeneaX aligns with GEDCOM X’s **data model** and **JSON-LD serialization** pri
 - Each entity maps to a corresponding GEDCOM X type.
 - Imports and exports are schema-validated against the GEDCOM X JSON-LD spec.
 - Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
+- Custom relationship types use project-scoped JSON-LD URIs (e.g., https://geneax.org/vocab#OfficiantPerformer) to preserve full GEDCOM X compliance while allowing culturally specific relational data, such as Amish community marriage officiants or interfamily property transfers.
 
 ## 🧠 Design Principles
 **1. Transparency over convenience.**
