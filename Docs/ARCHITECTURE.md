@@ -55,67 +55,45 @@ geneax/
 | **ui/** | Templates, static assets, and CSS/Tailwind theming. |
 
 ## 🗃️ Database Design Summary
-Backend: PostgreSQL
-
-Schema: Normalized tables with JSON fields for flexible genealogical structures.
-
-Primary Keys: UUIDs to align with GEDCOM X resource identifiers.
-
-Major Entities:
-
-Person
-
-Relationship
-
-Event
-
-Fact
-
-SourceDescription
-
-ProofStatement
-
-Document
-
-PlaceDescription
+- **Backend:** PostgreSQL
+- **Schema:** Normalized tables with JSON fields for flexible genealogical structures.
+- **Primary Keys:** UUIDs to align with GEDCOM X resource identifiers.
+- **Major Entities:**
+    - Person
+    - Relationship
+    - Event
+    - Fact
+    - SourceDescription
+    - ProofStatement
+    - Document
+    - PlaceDescription
 
 ## 🔗 Interoperability
-GeneaX aligns with GEDCOM X’s data model and JSON-LD serialization principles:
-
-Each entity maps to a corresponding GEDCOM X type.
-
-Imports and exports are schema-validated against the GEDCOM X JSON-LD spec.
-
-Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
+GeneaX aligns with GEDCOM X’s **data model** and **JSON-LD serialization** principles:
+- Each entity maps to a corresponding GEDCOM X type.
+- Imports and exports are schema-validated against the GEDCOM X JSON-LD spec.
+- Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
 
 ## 🧠 Design Principles
-Transparency over convenience.
-Every relationship or assertion must trace back to a source or ProofStatement.
-
-Layered modularity.
-Each Django app performs a single, clearly defined role.
-
-Human-legible logic.
-Readable code > clever code. Future-you deserves mercy.
-
-Loose coupling, strict validation.
-Apps can evolve independently, but all data must pass compliance checks.
+1. Transparency over convenience.
+    - Every relationship or assertion must trace back to a source or ProofStatement.
+1. Layered modularity.
+    - Each Django app performs a single, clearly defined role.
+1. Human-legible logic.
+    - Readable code > clever code. Future-you deserves mercy.
+1. Loose coupling, strict validation.
+    - Apps can evolve independently, but all data must pass compliance checks.
 
 ## 🚀 Future Extensions
-GraphQL API for advanced querying.
+- GraphQL API for advanced querying.
+- Family tree and timeline visualization APIs.
+- Collaboration features (shared editing, user permissions).
+- Provenance tracking for versioned historical records.
 
-Family tree and timeline visualization APIs.
-
-Collaboration features (shared editing, user permissions).
-
-Provenance tracking for versioned historical records.
-
-🧾 References
-GEDCOM X Specification
-
-Django REST Framework
-
-PostgreSQL JSON Fields
+## 🧾 References
+- GEDCOM X Specification
+- Django REST Framework
+- PostgreSQL JSON Fields
 
 
 “Architecture is the art of making your future debugging sessions inevitable.”
