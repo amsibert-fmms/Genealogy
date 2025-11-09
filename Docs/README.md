@@ -21,9 +21,9 @@ It’s equal parts learning exercise, data standard experiment, and quiet rebell
 ---
 
 ## Key Features
-- ✅ **GEDCOM X compliance** for people, relationships, sources, and events.  
-- ✅ **Proof Statements** and confidence scoring for genealogical conclusions.  
-- ✅ **Import/export utilities** for GEDCOM X JSON-LD.  
+- 📄 Documented **GEDCOM X compliance** for people, relationships, sources, and events.  
+- 📄 Documented **Proof Statements** and confidence scoring for genealogical conclusions.  
+- 🚧 **Import/export utilities** for GEDCOM X JSON-LD.  
 - 🚧 **Family tree visualizations** with relationship graphs and maps.  
 - 🚧 **Collaborative editing** with revision history and permissions.  
 - 🚧 **Schema validation tools** for quality assurance.
