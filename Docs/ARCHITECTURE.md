@@ -75,14 +75,14 @@ GeneaX aligns with GEDCOM X’s **data model** and **JSON-LD serialization** pri
 - Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
 
 ## 🧠 Design Principles
-1. Transparency over convenience.
-    - Every relationship or assertion must trace back to a source or ProofStatement.
-1. Layered modularity.
-    - Each Django app performs a single, clearly defined role.
-1. Human-legible logic.
-    - Readable code > clever code. Future-you deserves mercy.
-1. Loose coupling, strict validation.
-    - Apps can evolve independently, but all data must pass compliance checks.
+**1. Transparency over convenience.**
+     Every relationship or assertion must trace back to a source or ProofStatement.
+**1. Layered modularity.**
+     Each Django app performs a single, clearly defined role.
+**1. Human-legible logic.**
+     Readable code > clever code. Future-you deserves mercy.
+**1. Loose coupling, strict validation.**
+     Apps can evolve independently, but all data must pass compliance checks.
 
 ## 🚀 Future Extensions
 - GraphQL API for advanced querying.
