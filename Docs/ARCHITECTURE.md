@@ -30,19 +30,19 @@ geneax/
 
 ## ⚙️ Data Flow
 1. Input Layer
-   - Data can be entered manually via Django admin or imported as GEDCOM X JSON-LD.
-   - Import pipeline validates data against the GEDCOM X schema and custom GeneaX rules.
+  - Data can be entered manually via Django admin or imported as GEDCOM X JSON-LD.
+  - Import pipeline validates data against the GEDCOM X schema and custom GeneaX rules.
 1. Core Processing
-   - Validated entities are stored in the PostgreSQL database.
-   - The proof app applies confidence scoring and creates ProofStatements.
-   - Any conflicts or low-confidence claims are automatically flagged.
+  - Validated entities are stored in the PostgreSQL database.
+  - The proof app applies confidence scoring and creates ProofStatements.
+  - Any conflicts or low-confidence claims are automatically flagged.
 1. API Layer
-   - The REST API (Django REST Framework) exposes entities for external integration.
-   - Supports CRUD operations, pagination, and filtering.
-   - API responses are fully JSON-LD compliant.
+  - The REST API (Django REST Framework) exposes entities for external integration.
+  - Supports CRUD operations, pagination, and filtering.
+  - API responses are fully JSON-LD compliant.
 1. Output Layer
-   - Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.
-   - Visualization endpoints feed tree and timeline components in the UI.
+  - Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.
+  - Visualization endpoints feed tree and timeline components in the UI.
 
 ## 🧱 Core Components
 Component	Description
