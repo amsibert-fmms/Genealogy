@@ -26,6 +26,7 @@ geneax/
 ├── docs/              # Documentation suite
 ├── tests/             # Unit and integration tests
 └── manage.py
+```
 
 ⚙️ Data Flow
 Input Layer
@@ -127,5 +128,6 @@ GEDCOM X Specification
 Django REST Framework
 
 PostgreSQL JSON Fields
+
 
 “Architecture is the art of making your future debugging sessions inevitable.”
