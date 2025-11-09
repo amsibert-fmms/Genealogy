@@ -70,11 +70,11 @@ geneax/
 - **Major Entities:**
     - Person
     - Relationship
-    - FamilyAppearanceRole
+    - FamilyAppearance
     - Event
     - Fact
     - SourceDescription
-    - SourceCrossReference
+    - CrossReference
     - ProofStatement
     - Document
     - PlaceDescription
