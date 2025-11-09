@@ -46,13 +46,13 @@ geneax/
 
 ## 🧱 Core Components
 |Component | Description |
-|---------|-------------|
-| core/	| Foundational utilities, base models, and shared mixins. |
-| gedcomx/	| Implements primary GEDCOM X entities and relationships. |
-| proof/ | Houses the GeneaX Proof Standard implementation. |
-| api/ | REST API endpoints, serializers, and viewsets. |
-| import_export/ | Schema validation and GEDCOM X import/export logic. |
-| ui/ | Templates, static assets, and CSS/Tailwind theming. |
+|-----|-----------------|
+| **core/**	| Foundational utilities, base models, and shared mixins. |
+| **gedcomx/**	| Implements primary GEDCOM X entities and relationships. |
+| **proof/** | Houses the GeneaX Proof Standard implementation. |
+| **api/** | REST API endpoints, serializers, and viewsets. |
+| **import_export/** | Schema validation and GEDCOM X import/export logic. |
+| **ui/** | Templates, static assets, and CSS/Tailwind theming. |
 
 ## 🗃️ Database Design Summary
 Backend: PostgreSQL
