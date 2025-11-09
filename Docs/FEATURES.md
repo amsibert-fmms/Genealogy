@@ -19,6 +19,18 @@ This document outlines current and planned features, grouped by core functionali
 
 ---
 
+### 2. **Book & Family Cross-Reference System**
+- Each person or family can include a Book ID reference (e.g. JH12:1234), representing the   numbering system used in community genealogy books.
+- CrossReference model links people across multiple publications or editions.
+- Supports roles within family listings (e.g. child, wife, spouse, in-law).
+- Allows bidirectional references between family entries (e.g. JH12:1234 child ↔ JH12:6789 wife).
+- Enables direct search and lookup by book or family ID.
+- Fully integrated with the Proof Standard and Relationship Resolution systems.
+
+📖 *Because “see family #1234” deserves to mean something in your database.*
+
+---
+
 ### 2. **Proof & Evidence System**
 - Integration of the **GeneaX Proof Standard (GXPS)**.  
 - Confidence ratings for each claim (`certain`, `probable`, `possible`, `speculative`).  
@@ -94,13 +106,16 @@ This document outlines current and planned features, grouped by core functionali
 
 | Phase | Focus | Description | Status |
 |-------|--------|-------------|--------|
-| **1** | Core Models | Base GEDCOM X entities and CRUD | ✅ Complete |
-| **2** | Proof System | GXPS integration and confidence tracking | 🚧 In Progress |
-| **3** | Import/Export | GEDCOM X JSON-LD parser and exporter | 🚧 In Progress |
+| **1** | Core Models | Base GEDCOM X entities and CRUD | ⏳ Planned |
+| **2** | Proof System | GXPS integration and confidence tracking | ⏳ Planned |
+| **3** | Import/Export | GEDCOM X JSON-LD parser and exporter | ⏳ Planned |
 | **4** | Visualization | Family trees, timelines, maps | ⏳ Planned |
 | **5** | Collaboration | Multi-user editing and permissions | ⏳ Planned |
 | **6** | Interop Layer | API and legacy GEDCOM compatibility | ⏳ Planned |
 | **7** | UI Theming | Customizable styles and dark mode | ⏳ Planned |
+
+### 🕳️ Project Stage:
+- *“Currently existing primarily in Markdown and hubris.”*
 
 ---
 
