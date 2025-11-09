@@ -48,10 +48,9 @@ geneax/
 - Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.  
 - Visualization endpoints feed tree and timeline components in the UI.
 
-
 ## 🧱 Core Components
 |Component | Description |
-|-----|-----------------|
+|-----:|-----------------|
 | **core/**	| Foundational utilities, base models, and shared mixins. |
 | **gedcomx/**	| Implements primary GEDCOM X entities and relationships. |
 | **proof/** | Houses the GeneaX Proof Standard implementation. |
@@ -81,13 +80,16 @@ GeneaX aligns with GEDCOM X’s **data model** and **JSON-LD serialization** pri
 
 ## 🧠 Design Principles
 **1. Transparency over convenience.**
-     Every relationship or assertion must trace back to a source or ProofStatement.
-**1. Layered modularity.**
-     Each Django app performs a single, clearly defined role.
-**1. Human-legible logic.**
-     Readable code > clever code. Future-you deserves mercy.
-**1. Loose coupling, strict validation.**
-     Apps can evolve independently, but all data must pass compliance checks.
+- Every relationship or assertion must trace back to a source or ProofStatement.
+     
+**2. Layered modularity.**
+- Each Django app performs a single, clearly defined role.
+     
+**3. Human-legible logic.**
+- Readable code > clever code. Future-you deserves mercy.
+     
+**4. Loose coupling, strict validation.**
+- Apps can evolve independently, but all data must pass compliance checks.
 
 ## 🚀 Future Extensions
 - GraphQL API for advanced querying.
