@@ -121,3 +121,39 @@ class ProofStatement(models.Model):
     reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+```
+
+## 📊 Visualization & Reporting
+
+- Proof levels displayed as color-coded badges (certain → green, speculative → red).
+- Proof summaries automatically generated for each person.
+- Validation report summarizing:
+    - Missing proof statements
+    - Conflicting evidence
+    - Unsupported claims
+
+## 🧩 Example JSON Output
+```json
+{
+  "subject": "Person:12345",
+  "claim": "John Smith is the father of Mary Smith.",
+  "confidence_level": "probable",
+  "sources": [
+    {"id": "Source:6789", "title": "Baptism Record of Mary Smith"},
+    {"id": "Source:6810", "title": "1841 Census, London"}
+  ],
+  "analysis": "Both records list John Smith as Mary’s father. No conflicts identified.",
+  "conflicts": [],
+  "reviewed_by": "User:admin",
+  "created_at": "2025-10-27T14:21:00Z",
+  "updated_at": "2025-11-08T09:13:00Z"
+}
+```
+
+## 🧾 Summary
+- Every fact or relationship must have at least one ProofStatement.	
+- Confidence must be declared or derived.	
+- Speculative statements excluded from export by default.	
+- Validation must check for missing, conflicting, or outdated claims.	
+
+“Truth may be relative, but your data shouldn’t be.”
