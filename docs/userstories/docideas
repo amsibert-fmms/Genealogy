@@ -1,0 +1,103 @@
+Are you able to connect to my github and read it?
+
+I don't have the ability to connect to or access your GitHub account directly. I can't authenticate with GitHub or browse private repositories.
+
+However, I can help you with GitHub-related tasks in these ways:
+
+Public repositories: If you share a URL to a public GitHub repo, I can use my web fetching tool to read specific files or pages from it.
+Code you paste: You can copy and paste code, issues, or other content from your GitHub into our chat, and I can help analyze, review, or work with it.
+GitHub API guidance: I can help you write scripts or provide guidance on using the GitHub API if you want to automate something.
+General GitHub help: I can answer questions about Git commands, GitHub features, workflows, etc.
+What are you trying to do with your GitHub repositories? I'd be happy to help in whatever way I can!
+
+https://github.com/amsibert-fmms/Genealogy can you see this?
+
+I can fetch and read public GitHub repositories! Let me take a look at that repo for you.
+
+
+favicon
+Fetched GitHub - amsibert-fmms/Genealogy: Learning django
+github.com
+
+Yes, I can see it! This is a Django-based genealogy project. Here's what I can see from the repository:
+
+Project Overview:
+
+It's a single-app Django project for learning Django while managing genealogy data
+Has two main components:
+GeneaX: Django project configuration
+genealogy: Main application for genealogy features
+Includes comprehensive documentation in a docs folder
+Tech Stack:
+
+Python 3.8+
+Django 5.2+
+Setup Instructions:
+
+Install dependencies with pip install -r requirements.txt
+Run migrations
+Optionally create a superuser
+Run the development server on localhost:8000
+The documentation appears well-organized with:
+
+A docs index for navigation
+Project goals and background overview
+A developer hub for installation, configuration, and deployment
+Would you like me to look at any specific files in the repository, like the models, views, or documentation? I can fetch and review specific files to help you with any questions about the project.
+
+I'm still documenting.  I'm interested in documenting and planning everything before I start coding.  Do you have ideas for what i can plan next?
+
+That's a great approach! Planning thoroughly upfront will save you a lot of refactoring later. Let me look at what documentation you already have to see what might be missing.
+
+favicon
+
+Failed to fetch https://github.com/amsibert-fmms/Genealogy/blob/main/docs/index.md
+favicon
+
+Failed to fetch https://github.com/amsibert-fmms/Genealogy/tree/main/docs
+Let me try fetching the raw content directly:
+
+
+Failed to fetch https://raw.githubusercontent.com/amsibert-fmms/Genealogy/main/docs/index.md
+I'm hitting some limitations with fetching the internal documentation files. Could you share what documentation you've already completed, or paste the docs index? That would help me see what you have and suggest what's missing.
+
+In the meantime, here are typical areas you'd want to document/plan for a genealogy Django app before coding:
+
+Data & Models:
+
+Entity-Relationship Diagrams (ERD) for all models
+Field specifications (types, constraints, indexes)
+Relationship cardinalities and foreign key behaviors
+Data validation rules
+Privacy/sensitivity classifications
+Business Logic:
+
+Use cases and user stories
+GEDCOM import/export specifications
+Relationship calculation algorithms (how to determine cousins, degrees of separation, etc.)
+Duplicate detection strategy
+Data merge/conflict resolution rules
+Architecture & Technical:
+
+API design (if building REST endpoints)
+URL routing structure
+Authentication/authorization model (who can see/edit what)
+File storage strategy (for photos, documents)
+Search/filter specifications
+Performance considerations (caching, query optimization)
+UI/UX:
+
+Wireframes or mockups
+User flows (adding a person, linking relationships, etc.)
+Navigation structure
+Forms specifications
+Testing & Quality:
+
+Test strategy and coverage goals
+Sample/seed data specifications
+Edge cases to handle
+Deployment & Operations:
+
+Environment configurations
+Database migration strategy
+Backup/restore procedures
