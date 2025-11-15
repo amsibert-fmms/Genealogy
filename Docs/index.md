@@ -39,10 +39,10 @@ For a **conceptual map of how everything fits together**, see:
 
 # 🧭 Meta & Reference
 
-- **[VISION](VISION.md)** — Project philosophy and long-term objectives.  
-- **[NOTES](NOTES.md)** — Scratchpad for ideas, drafts, experiments, and unfiltered thoughts.  
-- **[SECURITY](SECURITY.md)** — Security policies.  
-- **[LICENSE](LICENSE.md)** — Permissions and legal details.
+- **[VISION](Referencd/VISION.md)** — Project philosophy and long-term objectives.  
+- **[NOTES](Reference/NOTES.md)** — Scratchpad for ideas, drafts, experiments, and unfiltered thoughts.  
+- **[SECURITY](Reference/SECURITY.md)** — Security policies.  
+- **[LICENSE](Reference/LICENSE.md)** — Permissions and legal details.
 
 ---
 
