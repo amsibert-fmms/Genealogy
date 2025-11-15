@@ -1,203 +1,151 @@
-# 🧱 GeneaX Data Models
-
-## Overview
-The **GeneaX** data model is built on **Django ORM** principles and designed for **GEDCOM X compatibility**.  
-Each entity maps closely to GEDCOM X core types, with several **GeneaX-specific extensions** to support community genealogy books, cross-referencing, and proof tracking.
-
-*This document describes how we intend to make data behave — someday.*
+# GeneaX Data Models  
+Structured by chapters that correspond to core genealogical domains.  
+Each chapter contains Tier 1 (conceptual), Tier 2 (logical), and Tier 3 (implementation) descriptions.
 
 ---
 
-## 🧩 Core GEDCOM X Entities
+# Chapter 1 — Person  {#chapter-1-person}
+> Linked from MASTER_OUTLINE → Chapter 1
 
-### **Person**
-Represents an individual human being (alive, deceased, or theoretical ancestor).
+## Tier 1 — Conceptual Model
+A Person represents an individual human subject.  
+Conceptually includes multiple names, biological attributes, and participation in events and relationships.
 
-```python
-class Person(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    full_name = models.CharField(max_length=255)
-    gender = models.CharField(max_length=20, blank=True)
-    birth = models.ForeignKey("Event", null=True, blank=True, on_delete=models.SET_NULL, related_name="birth_of")
-    death = models.ForeignKey("Event", null=True, blank=True, on_delete=models.SET_NULL, related_name="death_of")
-    source = models.ForeignKey("SourceDescription", on_delete=models.SET_NULL, null=True, blank=True)
-    book_ref = models.CharField(max_length=50, blank=True)  # e.g. "JH12:1234"
-    notes = models.TextField(blank=True)
-```
+## Tier 2 — Logical Model  {#person-model}
+Logical attributes include:
+- Identifiers  
+- Names (primary and alternate)  
+- Birth/death facts  
+- Gender identity  
+- Collections of events, relationships, citations, and facts  
 
----
+GEDCOM-X mapping: `GEDCOMX_COMPLIANCE.md#person`
 
-### **Relationship**
-Defines a genealogical or social link between two people.
-
-```python
-class Relationship(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    person1 = models.ForeignKey("Person", on_delete=models.CASCADE, related_name="relationships_from")
-    person2 = models.ForeignKey("Person", on_delete=models.CASCADE, related_name="relationships_to")
-    type = models.CharField(max_length=80)
-    event = models.ForeignKey("Event", on_delete=models.SET_NULL, null=True, blank=True)
-    source = models.ForeignKey("SourceDescription", on_delete=models.SET_NULL, null=True, blank=True)
-    proof = models.ForeignKey("ProofStatement", on_delete=models.SET_NULL, null=True, blank=True)
-    notes = models.TextField(blank=True)
-```
-
-Supported types include:
-- ParentChild
-- Spouse
-- OfficiantPerformer
-- PropertySeller
-- PropertyBuyer
-- Witness
-  
-📎 *All types map to GEDCOM X URIs; custom ones use the GeneaX namespace.*
+## Tier 3 — Implementation Model
+See Django ORM implementation in `genealogy/models/person.py` (if present).  
+Document gaps relative to Tier 2 in this section.
 
 ---
 
-### **Event**
-Captures a verifiable occurrence (birth, death, marriage, land sale, etc.).
+# Chapter 2 — Event  {#chapter-2-event}
+> Linked from MASTER_OUTLINE → Chapter 2
 
-```python
-class Event(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    type = models.CharField(max_length=50)
-    date = models.DateField(null=True, blank=True)
-    place = models.ForeignKey("PlaceDescription", null=True, blank=True, on_delete=models.SET_NULL)
-    description = models.TextField(blank=True)
-    source = models.ForeignKey("SourceDescription", on_delete=models.SET_NULL, null=True, blank=True)
-```
+## Tier 1 — Conceptual Model
+An Event is a discrete occurrence associated with one or more Persons.
 
----
+## Tier 2 — Logical Model  {#event-model}
+Logical components:
+- Event type  
+- Date(s)  
+- Place  
+- Roles of participating persons  
 
-### **SourceDescription**
-Represents a publication or document used as a genealogical source.
+GEDCOM-X mapping: `GEDCOMX_COMPLIANCE.md#event`
 
-```python
-class SourceDescription(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    source_key = models.CharField(max_length=20, unique=True)  # e.g. "JH12"
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=255, blank=True)
-    publication_date = models.DateField(null=True, blank=True)
-    publisher = models.CharField(max_length=255, blank=True)
-    notes = models.TextField(blank=True)
-```
-
-### **ProofStatement**
-Implements the GeneaX Proof Standard (GXPS).
-
-```python
-class ProofStatement(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    subject = models.ForeignKey("Person", on_delete=models.CASCADE)
-    claim = models.TextField()
-    analysis = models.TextField()
-    confidence_level = models.CharField(
-        max_length=12,
-        choices=[
-            ("certain", "Certain"),
-            ("probable", "Probable"),
-            ("possible", "Possible"),
-            ("speculative", "Speculative"),
-        ],
-    )
-    sources = models.ManyToManyField("SourceDescription")
-    conflicts = models.JSONField(default=list, blank=True)
-    reviewed_by = models.ForeignKey("auth.User", null=True, blank=True, on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-```
+## Tier 3 — Implementation Model
+List fields and relationships currently implemented.  
+Document missing components for future expansion.
 
 ---
 
-## 🧬 GeneaX Extensions
-### **CrossReference**
-Connects a GeneaX entity to a community genealogy book record.
+# Chapter 3 — Relationship  {#chapter-3-relationship}
+> Linked from MASTER_OUTLINE → Chapter 3
 
-```python
-class CrossReference(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    composite_id = models.CharField(max_length=50, unique=True)  # e.g. "JH12:1234"
-    source = models.ForeignKey("SourceDescription", on_delete=models.CASCADE)
-    target_id = models.UUIDField()  # UUID of the related entity
-    record_type = models.CharField(max_length=50)  # "Person", "Family", "Event"
-    position = models.CharField(max_length=20, blank=True)  # child, spouse, inlaw, etc.
-    references = models.ManyToManyField("self", symmetrical=False, blank=True)
-    notes = models.TextField(blank=True)
-```
-🧠 *Allows mapping across multiple publications, e.g., JH12 ↔ DH78.*
+## Tier 1 — Conceptual Model
+A Relationship is a structured connection between two Persons (e.g. parent–child, spouse).
 
----
+## Tier 2 — Logical Model  {#relationship-model}
+Defines:
+- Type  
+- Person A  
+- Person B  
+- Optional temporal bounds  
+- Supporting citations  
 
-### **FamilyAppearance**
-Represents how a person appears in a particular family entry within a publication.
-
-```python
-class FamilyAppearance(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    person = models.ForeignKey("Person", on_delete=models.CASCADE, related_name="appearances")
-    source = models.ForeignKey("SourceDescription", on_delete=models.CASCADE)
-    family_id = models.CharField(max_length=50)  # e.g. "JH12:6789"
-    position = models.CharField(max_length=20)
-    cross_reference = models.ForeignKey("CrossReference", null=True, blank=True, on_delete=models.SET_NULL)
-    notes = models.TextField(blank=True)
-```
-📖 *Captures cousin marriages, in-laws, and cross-linked spouse families without duplication.*
+## Tier 3 — Implementation Model
+Document the current Django Relationship model.
 
 ---
 
-### **GeneratedConclusion**
-Structured “written conclusion” derived from a ProofStatement.
+# Chapter 4 — Sources & Citations  {#chapter-4-sources}
+> Linked from MASTER_OUTLINE → Chapter 4
 
-```python
-class GeneratedConclusion(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    statement = models.ForeignKey("ProofStatement", on_delete=models.CASCADE)
-    summary = models.TextField()
-    confidence_level = models.CharField(max_length=12)
-    generated_at = models.DateTimeField(auto_now_add=True)
-    context = models.JSONField(default=dict, blank=True)
-```
+## Tier 1 — Conceptual Model
+- **Source**: An information-bearing artifact (record, book, certificate).  
+- **Citation**: A reference linking a fact or claim to a source.  
+- **Fact/Claim**: A proposed piece of genealogical information.
 
----
+## Tier 2 — Logical Model
+### Source Model  {#source-model}
+Attributes and identifiers.
 
-## 🔗 Relationships Between Models
-```plaintext
-Person ─┬─< Relationship >─┬─ Person
-        │
-        ├─< FamilyAppearance >─ SourceDescription
-        │
-        ├─< CrossReference >─ SourceDescription
-        │
-        └─< ProofStatement >─ SourceDescription
-```
-This structure allows:
-- Multiple books to describe the same person differently.
-- Cross-linked families through shared identifiers.
-- Full provenance tracking through source citations.
+### Citation Model  {#citation-model}
+Links claims/facts to sources.
+
+### Fact Model  {#fact-model}
+Represents a specific genealogical assertion.
+
+## Tier 3 — Implementation Model
+Document existing Source and Citation ORM structures.
 
 ---
 
-##🧠 Validation Rules
-1. Every entity must link to at least one SourceDescription or ProofStatement.
-1. CrossReference IDs (JH12:####) must be unique per source.
-1. Circular FamilyAppearances (child ↔ spouse) allowed but logged.
-1. GeneratedConclusion confidence must match its linked ProofStatement.
-1. Exports omit speculative data unless explicitly requested.
+# Chapter 5 — Claims, Conclusions, Proof  {#chapter-5-proof}
+> Linked from MASTER_OUTLINE → Chapter 5
+
+## Tier 1 — Conceptual Model
+The genealogical reasoning system:
+- Claims (assertions)
+- Conclusions (evaluated determinations)
+- ProofStatements (justifications)
+
+## Tier 2 — Logical Model
+### ProofStatement Model  {#proof-model}
+Narrative synthesis of evidence.
+
+### Conclusion Model
+Represents final determinations about persons, events, or relationships.
+
+## Tier 3 — Implementation Model
+State current implementation and gaps.
 
 ---
 
-##🧾 Implementation Status
-|Model	|Status	|Notes|
-|----|----|----------------|
-|Person	|📄 Documented	|Basic schema defined, not yet implemented.|
-|Relationship	|📄 Documented	|Supports extended types, pending validation logic.|
-|Event	|📄 Documented	|Core structure aligned with GEDCOM X.|
-|SourceDescription	|📄 Documented	|Acts as anchor for publications and book IDs.|
-|ProofStatement	|📄 Documented	|GXPS schema finalized.|
-|CrossReference	|📄 Documented	|Handles JH-style numbering systems.|
-|FamilyAppearance	|📄 Documented	|Enables contextual placement within publications.|
-|GeneratedConclusion	|📄 Documented	|Structure for future automation of narrative summaries.|
+# Chapter 6 — Numbering, Cross-References, Appearances  {#chapter-6-references}
+> Linked from MASTER_OUTLINE → Chapter 6
 
-*“These models may not exist in the database yet,
-but in the hearts of developers, they’re already normalized.”*
+## Tier 1 — Conceptual Model
+Models for interacting with external genealogical publications:
+- Numbering systems  
+- Family group appearances  
+- Person references  
+
+## Tier 2 — Logical Model
+### CrossReference Model  {#xref-model}
+Handles numbering schemes.
+
+### FamilyAppearance Model  {#familyappearance-model}
+Represents a person or family within a structured publication.
+
+### GeneratedConclusion Model  {#generatedconclusion-model}
+Future automation outputs.
+
+## Tier 3 — Implementation Model
+Document current ORM implementations.
+
+---
+
+# Implementation Status Overview
+
+| Model               | Status        | Notes |
+|--------------------|---------------|-------|
+| Person             | Documented    | Schema planned; partial implementation. |
+| Event              | Documented    | Aligned with GEDCOM-X core. |
+| Relationship       | Documented    | Validation pending. |
+| SourceDescription  | Documented    | Supports publications and identifiers. |
+| Citation           | Documented    | Connects sources to claims. |
+| ProofStatement     | Documented    | Logical structure complete. |
+| CrossReference     | Documented    | Supports numbering systems. |
+| FamilyAppearance   | Documented    | Publication-contextual placement. |
+| GeneratedConclusion| Documented    | Reserved for future inference. |
+
