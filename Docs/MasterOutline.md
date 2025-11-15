@@ -3,7 +3,7 @@ Canonical conceptual structure for all GeneaX documentation.
 This outline defines the chapters and tiers that organize the genealogical domain, the data model, and the implementation.
 
 For a list of all documentation files, see:  
-👉 `Docs/index.md`
+👉 [index.md](index.md)
 
 ---
 
