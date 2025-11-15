@@ -1,154 +1,205 @@
-# 🧬 GEDCOM X Compliance
-
-## Overview
-**GeneaX** adheres closely to the **GEDCOM X Specification**, ensuring data interoperability and consistency across genealogy systems.  
-This document outlines how GeneaX models and extensions align with the specification — including **CrossReferences**, **FamilyAppearances**, and **extended relationships** designed for community genealogical works.
-
-*We follow the standard, except when it forgot the fun parts.*
+# GEDCOM X Compliance
+This document describes how GeneaX aligns with the GEDCOM X Specification.  
+It corresponds primarily to **Tier 2 Logical Models** across Chapters 1–4, with limited extensions in Chapters 5–6.
 
 ---
 
-## 📜 Compliance Goals
-1. Implement all major GEDCOM X data structures.  
-2. Ensure all imported/exported data validates against the official GEDCOM X JSON-LD schema.  
-3. Preserve compatibility with existing GEDCOM X consumers.  
-4. Extend the model where necessary, without breaking structural integrity.  
+# 1. Overview
+GeneaX adopts GEDCOM X as its primary genealogical data standard.  
+Compliance ensures:
+
+- Interoperability with modern genealogical systems  
+- Predictable import/export behavior  
+- High fidelity when mapping people, events, relationships, and sources  
+- Structural consistency across the GeneaX data model  
+
+This document maps GeneaX entities to their GEDCOM X counterparts and identifies GeneaX extensions where needed.
 
 ---
 
-## 🧩 Core Entity Mapping
-
-| GEDCOM X Entity | GeneaX Model | Notes |
-|-----------------|--------------|-------|
-| `Person` | `gedcomx.models.Person` | Fully compliant with identifiers, gender, and facts. |
-| `Relationship` | `relationships.models.Relationship` | Extends base relationships with new types (officiant, property, witness). |
-| `Event` | `gedcomx.models.Event` | Used for births, deaths, marriages, property transfers, etc. |
-| `Fact` | `gedcomx.models.Fact` | Implements attributes like date, place, and type. |
-| `PlaceDescription` | `gedcomx.models.PlaceDescription` | Stores geographic metadata for events. |
-| `SourceDescription` | `gedcomx.models.SourceDescription` | Manages citations, publication data, and provenance. |
-| `Document` | `gedcomx.models.Document` | Represents transcriptions or attached digital media. |
-| `EvidenceReference` | `proof.models.ProofStatement` | References GEDCOM X entities with confidence scoring. |
-| `Conclusion` | `proof.models.GeneratedConclusion` *(extension)* | Structured representation of the “written conclusion” from the Genealogical Proof Standard. |
-| *(Extension)* | `relationships.models.FamilyAppearance` | Contextual family role links (child, spouse, in-law, etc.) within a publication. |
-| *(Extension)* | `relationships.models.CrossReference` | Handles book/family IDs (e.g., `JH12:1234`) and cross-source entity mapping. |
+# 2. Compliance Goals
+1. Implement core GEDCOM X entities within GeneaX models.  
+2. Ensure all data imported or exported validates against the official GEDCOM X JSON-LD schema.  
+3. Maintain compatibility with existing GEDCOM X consumers.  
+4. Extend entities only when necessary for GeneaX-specific features (Chapters 5–6).  
+5. Preserve structural integrity during import, export, and transformation workflows.
 
 ---
 
-## 🧱 GeneaX Extensions
+# 3. Mapping to Chapters and Tiers
 
-### **1. CrossReference**
-Encodes the book-style ID systems used in Amish and community genealogical publications.
+### Chapters Primarily Involved
+- **Chapter 1 — Person**  
+- **Chapter 2 — Event**  
+- **Chapter 3 — Relationship**  
+- **Chapter 4 — Sources & Citations**
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `composite_id` | String | Combined identifier (e.g. `JH12:1234`). |
-| `source` | FK → `SourceDescription` | The publication defining this ID. |
-| `target_id` | UUID | The actual entity (Person, Family, or Event) this ID refers to. |
-| `position` | Enum | Context within the source (child, spouse, in-law, etc.). |
-| `references` | M2M → self | Optional cross-links to matching or related entries. |
+### Tiers
+- **Tier 1** — Conceptual entities match GEDCOM X categories.  
+- **Tier 2** — Logical models map directly to GEDCOM X schema elements.  
+- **Tier 3** — Implementation handles conversions, validations, and JSON-LD representation.
 
-📚 *Compliant with GEDCOM X `Identifier` semantics and exported as `gx:BookReference`.*
-
----
-
-### **2. FamilyAppearance**
-Models a person’s contextual role in a specific family entry within a publication.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `person` | FK → `Person` | The individual appearing in the record. |
-| `source` | FK → `SourceDescription` | The publication defining the family. |
-| `family_id` | String | The family’s composite ID (e.g. `JH12:6789`). |
-| `position` | Enum | Role (child, spouse, in-law, etc.). |
-| `cross_reference` | FK → `CrossReference` | Link to the other family entry for cross navigation. |
-
-📖 *Maps to GEDCOM X `Relationship` + contextual `EvidenceReference`.*
+Extended models (Chapters 5–6) introduce structures beyond GEDCOM X but remain compatible.
 
 ---
 
-### **3. Extended Relationships**
-Adds culturally relevant relational types beyond standard parent/child/spouse definitions.
+# 4. Core GEDCOM X Entity Mapping
 
-| Type | URI | Description |
-|------|-----|-------------|
-| `officiant` | `https://geneax.org/vocab#OfficiantPerformer` | Person who performed a marriage ceremony. |
-| `property-seller` | `https://geneax.org/vocab#PropertySeller` | Seller in a property transfer. |
-| `property-buyer` | `https://geneax.org/vocab#PropertyBuyer` | Buyer in a property transfer. |
-| `witness` | `https://geneax.org/vocab#Witness` | Witness to an event, transaction, or record. |
+## 4.1 Person  {#person}
+GeneaX Person Model → GEDCOM X `Person`  
+Mappings include:
 
-🧩 *GEDCOM X–compliant via project-scoped vocabulary URIs.*
+- Names  
+- Gender  
+- Facts (birth, death, occupation, etc.)  
+- Identifiers  
+- Links to relationships and events  
 
----
-
-## 🔗 JSON-LD Context Mapping
-
-```json
-{
-  "@context": {
-    "gx": "https://geneax.org/vocab#",
-    "ProofStatement": "gx:ProofStatement",
-    "GeneratedConclusion": "gx:GeneratedConclusion",
-    "CrossReference": "gx:CrossReference",
-    "FamilyAppearance": "gx:FamilyAppearance",
-    "confidence_level": "gx:confidenceLevel",
-    "analysis": "gx:analysis",
-    "conflicts": "gx:conflicts",
-    "BookReference": "gx:BookReference"
-  }
-}
-```
+See `DATA_MODELS.md#person-model`.
 
 ---
 
-## 🧠 Validation & Compliance Checks
-|Check	|Description|
-|---|------------------|
-|Schema Validation	|All JSON-LD exports validated against GEDCOM X + GeneaX context.|
-|CrossReference |Integrity	Every composite_id must match a valid SourceDescription.|
-|FamilyAppearance Rules	|Circular references (e.g., spouse ↔ child) allowed but logged.|
-|Relationship Typing	|Custom types must use a registered GeneaX vocabulary URI.|
-|Proof Integration	|All relationship claims must have an associated ProofStatement.|
+## 4.2 Relationship  {#relationship}
+GeneaX Relationship Model → GEDCOM X `Relationship`  
+Supported types include:
+
+- Parent-child  
+- Couple  
+- Spouse  
+- Partner  
+
+Extended types (guardian, adoptive, sibling) are GeneaX-specific but remain structurally compatible.
+
+See `DATA_MODELS.md#relationship-model`.
 
 ---
 
-## 🧮 Example Export
-```json
-{
-  "persons": [
-    {
-      "id": "Person:JH12-1234",
-      "identifiers": [
-        {
-          "type": "gx:BookReference",
-          "value": "JH12:1234",
-          "source": "Source:JH12"
-        }
-      ],
-      "evidence": ["ProofStatement:0001"]
-    }
-  ],
-  "relationships": [
-    {
-      "type": "https://geneax.org/vocab#OfficiantPerformer",
-      "person1": "Person:JH12-0099",
-      "person2": "Person:JH12-1234",
-      "event": "Event:1901-Marriage",
-      "sources": ["Source:JH12"]
-    }
-  ]
-}
-```
+## 4.3 Event  {#event}
+GeneaX Event Model → GEDCOM X `Event` and `EventRole`  
+
+Mappings include:
+
+- Event type  
+- Date / date range  
+- Place  
+- Participating persons  
+- Event roles  
+
+See `DATA_MODELS.md#event-model`.
 
 ---
 
-## 🧾 Summary
-|Category	|Status	|Notes|
-|---|---|---|
-|GEDCOM X Base Model	|📄 Documented	|Core entities defined, implementation forthcoming.|
-|JSON-LD Compliance	|📄 Documented	|Context structure planned, not yet validated.|
-|CrossReference System	|📄 Documented	|Schema drafted, logic design complete.|
-|FamilyAppearance	|📄 Documented	|Context model designed for publication mapping.|
-|Extended Relationships	|📄 Documented	|Relationship types defined, implementation TBD.|
-|Legacy GEDCOM 5.5.1	|🚧 Planned	|Optional import/export converter for later phase.|
+## 4.4 SourceDescription  {#source}
+GeneaX Source Model → GEDCOM X `SourceDescription`  
 
-“Standards compliance: currently existing in theory, but that’s where all great specs begin.”
+Includes:
+
+- Title  
+- Citation text  
+- Publication details  
+- Links to facts or events  
+
+GeneaX adds structured identifiers useful for publication mapping (Chapter 6).
+
+See `DATA_MODELS.md#source-model`.
+
+---
+
+## 4.5 Fact
+GeneaX Fact Model → GEDCOM X `Fact`  
+
+Examples:
+
+- Birth fact  
+- Death fact  
+- Residence  
+- Occupation  
+
+GeneaX extends Fact with internal confidence scoring (Chapter 5).
+
+---
+
+# 5. JSON-LD Representation
+
+### 5.1 Export Rules
+- GeneaX exports follow GEDCOM X JSON-LD context.  
+- All entities must include identifiers compatible with `@id` rules.  
+- Relationships must use standard GEDCOM X type URIs.  
+- Dates and places must conform to GEDCOM X formatting guidelines.
+
+### 5.2 Import Rules
+- All incoming GEDCOM X JSON-LD must be schema-validated.  
+- Unknown or extended types are preserved when possible.  
+- Unmapped extensions are stored in auxiliary structures for review.
+
+---
+
+# 6. GeneaX Extensions to GEDCOM X
+
+GeneaX introduces several domain-specific extensions while maintaining structural compatibility.
+
+### 6.1 CrossReference Model  
+Supports publication-style numbering systems.  
+Corresponds to Chapter 6.
+
+### 6.2 FamilyAppearance  
+Represents how individuals or families appear in a structured publication or compiled genealogy.  
+No GEDCOM X equivalent exists; implemented as an extension.
+
+### 6.3 Extended Relationship Types  
+Adds optional types (e.g., guardian, adoptive) beyond the base GEDCOM X set.  
+Mapped using `type` URIs compatible with GEDCOM X semantics.
+
+### 6.4 Proof and Reasoning Layer  
+(GeneX-only)  
+Models claims, conclusions, and proof statements (Chapter 5).  
+These do **not** conflict with GEDCOM X because they operate above the data layer.
+
+---
+
+# 7. Validation Requirements
+
+GeneaX performs the following validations for GEDCOM X compliance:
+
+- Person, Event, and Relationship models must include required GEDCOM X fields.  
+- JSON-LD exports must conform to GEDCOM X context definitions.  
+- Date and place formats must follow GEDCOM X formatting conventions.  
+- Unsupported or malformed structures must be flagged and quarantined.  
+
+See `VALIDATION_RULES.md` for full detail.
+
+---
+
+# 8. Interoperability Considerations
+
+- GeneaX maintains forward-compatibility with GEDCOM X core.  
+- Data imported from non-GEDCOM X systems is normalized before mapping.  
+- Exported GEDCOM X data is suitable for external systems such as FamilySearch.  
+- Structural extensions are isolated to avoid breaking downstream consumers.
+
+---
+
+# 9. Compliance Status Summary
+
+| Category                  | Status       | Notes                                       |
+|---------------------------|--------------|---------------------------------------------|
+| GEDCOM X Base Model       | Documented   | Core entities mapped; implementation ongoing |
+| JSON-LD Compliance        | Documented   | Context structure designed; validation pending |
+| CrossReference Extension  | Documented   | Fully designed; implementation pending        |
+| FamilyAppearance Model    | Documented   | Designed for publication mapping              |
+| Extended Relationships    | Documented   | Additional types defined; logic deferred      |
+| Legacy GEDCOM 5.5.1       | Planned      | Optional import/export for later phase        |
+
+---
+
+# 10. Summary
+
+GeneaX aligns closely with the GEDCOM X specification while extending it in areas needed for:
+
+- Publication mapping  
+- Reasoning and proof structures  
+- Enhanced relationship modeling  
+- Data integrity and validation workflows  
+
+This compliance layer ensures high-quality genealogical interoperability across systems.
+
