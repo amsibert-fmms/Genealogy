@@ -1,159 +1,200 @@
-# 🧾 GeneaX Proof Standard (GXPS)
-
-## Overview
-The **GeneaX Proof Standard (GXPS)** defines how genealogical conclusions are supported, scored, and validated within the GeneaX system.  
-It adapts the **Genealogical Proof Standard (GPS)** to a structured, machine-readable model that integrates with **GEDCOM X** entities.
-
-In short: **every claim needs proof, and every proof needs a source.**
+# GeneaX Proof Standard (GXPS)
+The GeneaX Proof Standard defines how genealogical claims, conclusions, and proof statements are evaluated, documented, and validated within the system.  
+This document corresponds to **Chapter 5** in `MASTER_OUTLINE.md`.
 
 ---
 
-## 🎯 Purpose
-To provide a consistent and transparent method for:
-- Evaluating genealogical conclusions.  
-- Documenting the reasoning behind assertions.  
-- Assigning confidence levels to data.  
-- Maintaining source traceability for every relationship or fact.  
+# 1. Overview
+The GeneaX Proof Standard (GXPS) adapts traditional genealogical reasoning into a structured, machine-readable model. Its purpose is to ensure that:
+
+- Every genealogical claim is supported by evidence  
+- Every conclusion is derived through transparent reasoning  
+- Every proof statement is traceable to its sources  
+- Conflicts are identified, recorded, and resolvable  
+
+GXPS integrates directly with the Tier 2 Logical Models for Claims, Conclusions, and ProofStatements described in `DATA_MODELS.md`.
 
 ---
 
-## 📚 Foundations
+# 2. Purpose
+The Proof Standard provides a consistent framework for:
 
-GXPS builds on the **five principles** of the *Genealogical Proof Standard (GPS)*:
+- Evaluating genealogical conclusions  
+- Documenting the reasoning behind assertions  
+- Assigning confidence levels to claims  
+- Ensuring source traceability  
+- Managing conflicting evidence  
+- Supporting automated and manual review workflows  
 
-1. **Reasonably exhaustive research**  
-2. **Complete and accurate source citations**  
-3. **Critical analysis and correlation of data**  
-4. **Resolution of conflicting evidence**  
-5. **A soundly reasoned, written conclusion**
-
-In GeneaX, these principles are represented as structured data attached to `ProofStatement` objects.
-
----
-
-## 🧩 Core Concepts
-
-### **ProofStatement**
-A `ProofStatement` represents a genealogical claim or conclusion supported by sources and analysis.
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | UUID | Unique identifier |
-| `subject` | FK → `Person` | The entity or person the statement concerns |
-| `claim` | Text | The specific genealogical assertion (e.g. “John Smith is the father of Mary Smith.”) |
-| `sources` | M2M → `SourceDescription` | List of supporting evidence |
-| `analysis` | Text | Explanation of reasoning and evaluation of evidence |
-| `confidence_level` | Enum | One of `certain`, `probable`, `possible`, `speculative` |
-| `conflicts` | JSON | References to conflicting statements and resolutions |
-| `reviewed_by` | FK → `User` | Optional peer reviewer or verifier |
-| `created_at` | DateTime | Timestamp of creation |
-| `updated_at` | DateTime | Timestamp of last edit |
+It ensures that genealogical data remains verifiable, maintainable, and interoperable.
 
 ---
 
-### **Confidence Levels**
+# 3. Alignment With Chapters and Tiers
 
-| Level | Meaning | Typical Use |
-|-------|----------|-------------|
-| `certain` | Supported by primary, corroborated, and consistent evidence | Birth certificates, official records |
-| `probable` | Strong evidence but minor gaps or secondary sources | Census, secondary records |
-| `possible` | Suggestive evidence but insufficient corroboration | Inferred relationships |
-| `speculative` | Hypothetical or unverified | “Might be related to…” theories |
+- **Chapter 5** defines the conceptual structure of claims, conclusions, and proof.  
+- **Tier 1** describes the reasoning concepts (claim → conclusion → proof).  
+- **Tier 2** defines the full logical data model for ProofStatements, Conclusions, and associated relationships.  
+- **Tier 3** defines the Django ORM implementation for the reasoning layer.
 
-💡 Confidence affects both **visual indicators** in the UI and **validation reports** during GEDCOM X exports.
+Relevant models in `DATA_MODELS.md`:
 
----
-
-## ⚙️ Validation Rules
-Every relationship or fact in GeneaX must reference at least one **ProofStatement**.  
-The following rules ensure data quality:
-
-1. Missing proof → flagged as **unverified**.  
-2. Conflicts unresolved → flagged as **incomplete**.  
-3. Speculative claims → excluded from GEDCOM X export by default.  
-4. Confidence downgraded if supporting sources lack citations.  
+- `#proof-model`  
+- `#fact-model`  
+- Conclusion model section  
 
 ---
 
-## 🧮 Evidence Scoring (Optional)
-ProofStatements can carry a numeric **confidence score** (0.0–1.0) generated from:
-- **Source Type Weighting**: original > derivative > authored.  
-- **Information Quality**: primary > secondary > tertiary.  
-- **Evidence Type**: direct > indirect > negative.  
-- **Corroboration Count**: number of consistent supporting sources.
+# 4. Core Reasoning Entities
 
-This allows algorithmic consistency checks and visual confidence indicators.
+## 4.1 Claim
+A *Claim* (or Fact Assertion) represents a proposed genealogical statement such as:
 
-Example:
+- “John Smith was born in 1842.”  
+- “Mary Jones is the daughter of Thomas Jones.”
 
-| Metric | Value | Weight | Score |
-|--------|--------|--------|-------|
-| Source Type | Original | 0.9 | 0.9 |
-| Information | Primary | 0.8 | 0.8 |
-| Evidence | Direct | 0.7 | 0.7 |
-| Corroboration | 2 sources | 0.6 | 0.6 |
-| **Composite Score** | — | — | **0.75 (Probable)** |
+### Characteristics
+- Claims reference one or more **Citations**.  
+- Claims may conflict with other claims.  
+- Claims may represent low-, medium-, or high-confidence statements.
+
+### Model Links
+Logical structure: `DATA_MODELS.md#fact-model`  
+Citation structure: `Chapter 4 — Sources & Citations`
 
 ---
 
-## 🧠 Integration with GEDCOM X
+## 4.2 Conclusion
+A *Conclusion* represents a reasoned determination about a person, event, or relationship.
 
-Each `ProofStatement` links to one or more GEDCOM X entities using `EvidenceReference`.  
-This preserves compatibility and data portability.
+### Characteristics
+- Derived from one or more claims  
+- Must be supported by a ProofStatement  
+- May override conflicting claims  
+- Should represent the best-supported interpretation of the evidence  
 
-```python
-class ProofStatement(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    subject = models.ForeignKey(Person, on_delete=models.CASCADE)
-    claim = models.TextField()
-    analysis = models.TextField()
-    confidence_level = models.CharField(
-        max_length=12,
-        choices=[
-            ('certain', 'Certain'),
-            ('probable', 'Probable'),
-            ('possible', 'Possible'),
-            ('speculative', 'Speculative'),
-        ],
-    )
-    sources = models.ManyToManyField(SourceDescription)
-    conflicts = models.JSONField(default=list, blank=True)
-    reviewed_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-```
+### Model Links
+Logical structure: `DATA_MODELS.md` (Conclusion Model section)
 
-## 📊 Visualization & Reporting
+---
 
-- Proof levels displayed as color-coded badges (certain → green, speculative → red).
-- Proof summaries automatically generated for each person.
-- Validation report summarizing:
-    - Missing proof statements
-    - Conflicting evidence
-    - Unsupported claims
+## 4.3 ProofStatement
+A *ProofStatement* is a structured narrative explaining how a conclusion was reached.
 
-## 🧩 Example JSON Output
+### Characteristics
+- Must reference all claims used in the reasoning process  
+- Summarizes evidence, contradictions, and resolution  
+- Maps to external genealogical proof standards via Tier 2  
+- Required for any conclusion exported or published  
+
+### Model Links
+Logical structure: `DATA_MODELS.md#proof-model`  
+Standard mapping: `GEDCOMX_COMPLIANCE.md`
+
+---
+
+# 5. Evidence and Citation Requirements
+
+## 5.1 Mandatory Citation
+Every claim must link to at least one **Citation**.  
+Citations must reference a **SourceDescription** (Chapter 4).
+
+## 5.2 Multi-Citation Support
+Claims may be supported by multiple citations.  
+Conclusions may be supported by multiple claims.
+
+## 5.3 Unsupported Statements
+Statements lacking citations:
+
+- Cannot form conclusions  
+- Are excluded from exports  
+- Must be flagged by validation rules
+
+---
+
+# 6. Confidence Assessment
+
+## 6.1 Confidence Levels
+Confidence reflects the quality and agreement of evidence.  
+Standard levels include:
+
+- **High** — multiple, consistent sources  
+- **Moderate** — adequate evidence with minor gaps  
+- **Low** — limited evidence or unresolved conflicts  
+- **Speculative** — insufficient evidence; excluded from export  
+
+## 6.2 Confidence Derivation
+Confidence may be:
+
+- Manually assigned, or  
+- Automatically inferred from citation strength and claim agreement  
+
+Confidence scores must be stored as part of the claim or conclusion record.
+
+---
+
+# 7. Conflict Handling
+
+## 7.1 Conflict Types
+Conflicts may include:
+
+- Contradictory dates  
+- Overlapping or impossible events  
+- Multiple incompatible relationships  
+- Conflicting identities or roles  
+
+## 7.2 Recording Conflicts
+All conflicts must be recorded in the reasoning layer and attached to the relevant claims.
+
+## 7.3 Resolution
+Resolutions occur when:
+
+- A conclusion overrides one or more conflicting claims  
+- A ProofStatement documents the reasoning behind the decision  
+
+---
+
+# 8. Validation Requirements
+
+GXPS requires the following validations:
+
+- Every claim must have at least one citation  
+- Every conclusion must have a ProofStatement  
+- Conflicting claims must be marked for review  
+- Missing or outdated citations must be flagged  
+- Speculative statements must be excluded from export  
+
+Rules are detailed in `VALIDATION_RULES.md`.
+
+---
+
+# 9. Example Structure (JSON)
+
 ```json
 {
-  "subject": "Person:12345",
-  "claim": "John Smith is the father of Mary Smith.",
-  "confidence_level": "probable",
-  "sources": [
-    {"id": "Source:6789", "title": "Baptism Record of Mary Smith"},
-    {"id": "Source:6810", "title": "1841 Census, London"}
-  ],
-  "analysis": "Both records list John Smith as Mary’s father. No conflicts identified.",
+  "claim_id": "c123",
+  "subject": "person:42",
+  "statement": "John Doe was born in 1842",
+  "citations": ["ct1", "ct2"],
+  "confidence": "moderate",
+  "conclusion": "cn1",
+  "proof": "ps1",
   "conflicts": [],
-  "reviewed_by": "User:admin",
+  "reviewed_by": "admin",
   "created_at": "2025-10-27T14:21:00Z",
   "updated_at": "2025-11-08T09:13:00Z"
 }
 ```
+---
 
-## 🧾 Summary
-- Every fact or relationship must have at least one ProofStatement.	
-- Confidence must be declared or derived.	
-- Speculative statements excluded from export by default.	
-- Validation must check for missing, conflicting, or outdated claims.	
+# 10. Summary
 
-“Truth may be relative, but your data shouldn’t be.”
+- Claims represent asserted genealogical facts.  
+- Conclusions represent evaluated interpretations based on claims.  
+- ProofStatements provide the reasoning that justifies each conclusion.  
+- Every claim must include one or more citations.  
+- Every conclusion must include a ProofStatement.  
+- All conflicts between claims must be recorded and resolvable.  
+- Speculative or unsupported statements must be excluded from export.  
+
+This standard ensures that genealogical information in GeneaX remains accurate, transparent, and defensible.
