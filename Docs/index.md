@@ -2,20 +2,20 @@
 
 Welcome to **GeneaX**, a Django-based genealogy platform built for hands-on learning and strict GEDCOM X compliance.  
 This index lists all project documentation files — so you can pretend there’s order in the chaos.
+- [README](README.md) — Project overview, goals, and quick start guide.  
 
 ---
 
 ## 📘 Core Documentation
 
-- [README](README.md) — Project overview, goals, and quick start guide.  
-- [ARCHITECTURE](ARCHITECTURE.md) — Django app structure, data flow, and dependency map.  
-- [FEATURES](FEATURES.md) — Feature list, roadmap, and phase breakdowns.  
-- [PROOF_STANDARD](PROOF_STANDARD.md) — The GeneaX Proof Standard — data verification and evidence scoring.  
-- [GEDCOMX_COMPLIANCE](GEDCOMX_COMPLIANCE.md) — Model mapping and schema compliance notes for GEDCOM X.  
-- [DATA_MODELS](DATA_MODELS.md) — Django model definitions for all core entities.  
-- [API_REFERENCE](API_REFERENCE.md) — REST API endpoints, parameters, and examples.  
-- [VALIDATION_RULES](VALIDATION_RULES.md) — Schema validation, proof checks, and error handling.  
-- [ROADMAP](ROADMAP.md) — Development milestones and version tracking.  
+- [ARCHITECTURE](Core_Docs/ARCHITECTURE.md) — Django app structure, data flow, and dependency map.  
+- [FEATURES](Core_Docs/FEATURES.md) — Feature list, roadmap, and phase breakdowns.  
+- [PROOF_STANDARD](Core_Docs/PROOF_STANDARD.md) — The GeneaX Proof Standard — data verification and evidence scoring.  
+- [GEDCOMX_COMPLIANCE](Core_Docs/GEDCOMX_COMPLIANCE.md) — Model mapping and schema compliance notes for GEDCOM X.  
+- [DATA_MODELS](Core_Docs/DATA_MODELS.md) — Django model definitions for all core entities.  
+- [API_REFERENCE](Core_Docs/API_REFERENCE.md) — REST API endpoints, parameters, and examples.  
+- [VALIDATION_RULES](Core_Docs/VALIDATION_RULES.md) — Schema validation, proof checks, and error handling.  
+- [ROADMAP](Core_Docs/ROADMAP.md) — Development milestones and version tracking.  
 
 ---
 
