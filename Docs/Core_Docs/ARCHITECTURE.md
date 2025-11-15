@@ -1,114 +1,151 @@
-# 🏗️ GeneaX Architecture
-
-## Overview
-**GeneaX** is a modular Django-based application structured around the **GEDCOM X specification** for genealogical data.  
-
-The architecture prioritizes:
-- **Data integrity** – strict adherence to GEDCOM X entities.  
-- **Extensibility** – easily add new data types or validation rules.  
-- **Transparency** – traceable, verifiable genealogical assertions.  
-- **Educational clarity** – intentionally written for learning Django deeply.
+# GeneaX Architecture  
+Foundational description of the GeneaX application structure and its alignment with the chapter and tier model defined in `MASTER_OUTLINE.md`.
 
 ---
 
-## 🧩 Application Structure
+## 1. Overview  
+GeneaX is a modular Django-based application designed around the principles of:
+
+- **Standards alignment** — Primary modeling follows the GEDCOM X specification.  
+- **Data integrity** — Entities, relationships, and facts reflect explicit rules defined in `VALIDATION_RULES.md`.  
+- **Traceable reasoning** — Evidence → Claims → Conclusions → ProofStatements mirror genealogical best practices.  
+- **Incremental growth** — Architecture supports expansion from Tier 1 (conceptual) to Tier 3 (implementation).  
+
+This document describes how GeneaX maps domain concepts (Chapters 1–6) into a functional, maintainable application structure.
+
+---
+
+## 2. Architectural Layers  
+The system is organized into three major layers that correspond to the tiers defined in `MASTER_OUTLINE.md`.
+
+### 2.1 Domain Layer (Tier 2 → Tier 3)  
+Located primarily in Django models, this layer implements:
+
+- Person (Chapter 1)  
+- Event (Chapter 2)  
+- Relationship (Chapter 3)  
+- Source, Citation, Fact (Chapter 4)  
+- Claims, Conclusions, Proof (Chapter 5)  
+- CrossReference, FamilyAppearance (Chapter 6)
+
+These models implement the **Tier 3 Implementation Model** and map directly onto the **Tier 2 Logical Model** described in `DATA_MODELS.md`.
+
+### 2.2 Application Layer  
+Contains the internal logic of GeneaX, including:
+
+- Business rules  
+- Validation routines (aligned with `VALIDATION_RULES.md`)  
+- Data services and orchestration  
+- Import/export workflows  
+- GEDCOM X converters  
+
+This layer enforces constraints defined in the logical model.
+
+### 2.3 API & Presentation Layer  
+Exposes data and capabilities through:
+
+- Django REST Framework (DRF) API  
+- Admin views  
+- Future UI views (timelines, family trees)  
+- Future GraphQL endpoint  
+
+API endpoints map directly to Tier 3 implementation classes.  
+See `API_REFERENCE.md` for endpoint-level details.
+
+---
+
+## 3. Django Application Structure  
 
 ```plaintext
-geneax/
+genealogy/
 │
-├── core/              # Shared utilities, mixins, base models
-├── gedcomx/           # GEDCOM X data entities (Person, Relationship, etc.)
-├── proof/             # ProofStandard logic (ProofStatement, evidence scoring)
-├── relationships/     # FamilyAppearance, Relationship extensions, cross-references
-├── api/               # REST API endpoints (DRF)
-├── import_export/     # Import/export and schema validation logic
-├── ui/                # Templates, static files, and front-end integration
+├── apps/
+│   ├── persons/          # Chapter 1
+│   ├── events/           # Chapter 2
+│   ├── relationships/    # Chapter 3
+│   ├── sources/          # Chapter 4
+│   ├── reasoning/        # Chapter 5
+│   ├── publications/     # Chapter 6
+│   └── common/           # Shared utilities, enums, validators
 │
-├── docs/              # Documentation suite
-├── tests/             # Unit and integration tests
-└── manage.py
+├── api/
+│   ├── serializers/
+│   ├── viewsets/
+│   ├── routers.py
+│   └── schemas/
+│
+├── core/
+│   ├── validation/       # Logical constraints
+│   ├── mapping/          # GEDCOM X mappers
+│   ├── workflows/
+│   └── services/
+│
+└── utils/
+    ├── date_parsing/
+    ├── location/
+    └── identifiers/
 ```
+Each directory corresponds to a conceptual chapter or a shared cross-cutting concern.
 
-## ⚙️ Data Flow
+---
 
-**1. Input Layer**  
-- Data can be entered manually via Django admin or imported as GEDCOM X JSON-LD.  
-- Import pipeline validates data against the GEDCOM X schema and custom GeneaX rules.  
+## 4. Data Flow
 
-**2. Core Processing**  
-- Validated entities are stored in the PostgreSQL database.  
-- The `proof` app applies confidence scoring and creates ProofStatements.  
-- Any conflicts or low-confidence claims are automatically flagged.  
+### 4.1 Creation Flow
+1. Client submits structured data through API  
+2. Serializer validates input  
+3. Logical rules applied (`VALIDATION_RULES.md`)  
+4. Instance saved to ORM  
+5. Optional: reasoning layer updates claims or conclusions  
 
-**3. API Layer**  
-- The REST API (Django REST Framework) exposes entities for external integration.  
-- Supports CRUD operations, pagination, and filtering.  
-- API responses are fully JSON-LD compliant.  
+### 4.2 Read Flow
+1. ORM retrieves model instance  
+2. Serializer expands references  
+3. Optional: computed attributes (age, spans, derived facts)  
+4. API returns JSON or GEDCOM X-aligned output  
 
-**4. Output Layer**  
-- Export tools generate GEDCOM X JSON-LD or GeneaX proof bundles.  
-- Visualization endpoints feed tree and timeline components in the UI.
+### 4.3 Import Flow (GEDCOM X)
+1. GEDCOM X input parsed  
+2. Mapped to Tier 2 logical entities (`GEDCOMX_COMPLIANCE.md`)  
+3. Logical validation  
+4. ORM instances created or merged  
 
-**5. Relationship Resolution**
-- The relationships module links Person entities across sources using extended relationship types and FamilyAppearance records. This allows complex multi-source mappings such as cousin marriages, in-law references, and cross-book property transactions to be modeled without duplication.
+---
 
-## 🧱 Core Components
-|Component | Description |
-|-----:|-----------------|
-| **core/**	| Foundational utilities, base models, and shared mixins. |
-| **gedcomx/**	| Implements primary GEDCOM X entities and relationships. |
-| **proof/** | Contains the GeneaX Proof Standard implementation. |
-| **api/** | REST API endpoints, serializers, and viewsets. |
-| **import_export/** | Schema validation and GEDCOM X import/export logic. |
-| **ui/** | Templates, static assets, and CSS/Tailwind theming. |
-| **relationships/** |	Extended GEDCOM X relationships, cross-references, and contextual family appearances. |
+## 5. Alignment With Chapters
 
-## 🗃️ Database Design Summary
-- **Backend:** PostgreSQL
-- **Schema:** Normalized tables with JSON fields for flexible genealogical structures.
-- **Primary Keys:** UUIDs to align with GEDCOM X resource identifiers.
-- **Major Entities:**
-    - Person
-    - Relationship
-    - FamilyAppearance
-    - Event
-    - Fact
-    - SourceDescription
-    - CrossReference
-    - ProofStatement
-    - Document
-    - PlaceDescription
+| Chapter | Architectural Location | Description |
+|--------|-------------------------|-------------|
+| 1. Person | `apps/persons/` | Identity data and person-level logic |
+| 2. Event | `apps/events/` | Event types, dates, places, participant roles |
+| 3. Relationship | `apps/relationships/` | Structured person-to-person connections |
+| 4. Sources | `apps/sources/` | Source descriptions, citations, facts |
+| 5. Proof | `apps/reasoning/` | Claims, conclusions, proof statements |
+| 6. Numbering | `apps/publications/` | Cross-references, numbering, appearances |
 
-## 🔗 Interoperability
-GeneaX aligns with GEDCOM X’s **data model** and **JSON-LD serialization** principles:
-- Each entity maps to a corresponding GEDCOM X type.
-- Imports and exports are schema-validated against the GEDCOM X JSON-LD spec.
-- Extensible conversion layer for legacy GEDCOM 5.5.1 compatibility.
-- Custom relationship types use project-scoped JSON-LD URIs (e.g., https://geneax.org/vocab#OfficiantPerformer) to preserve full GEDCOM X compliance while allowing culturally specific relational data, such as Amish community marriage officiants or interfamily property transfers.
+---
 
-## 🧠 Design Principles
-**1. Transparency over convenience.**
-- Every relationship or assertion must trace back to a source or ProofStatement.
-     
-**2. Layered modularity.**
-- Each Django app performs a single, clearly defined role.
-     
-**3. Human-legible logic.**
-- Readable code > clever code. Future-you deserves mercy.
-     
-**4. Loose coupling, strict validation.**
-- Apps can evolve independently, but all data must pass compliance checks.
+## 6. Scaling and Extension
 
-## 🚀 Future Extensions
-- GraphQL API for advanced querying.
-- Family tree and timeline visualization APIs.
-- Collaboration features (shared editing, user permissions).
-- Provenance tracking for versioned historical records.
+The architecture is designed for incremental extension.
 
-## 🧾 References
-- [GEDCOM X Specification](https://github.com/FamilySearch/gedcomx)
-- [Django REST Framework](https://www.django-rest-framework.org/)
-- [PostgreSQL JSON Fields](https://www.postgresql.org/docs/current/datatype-json.html)
+### 6.1 Planned Additions
+- GraphQL endpoint  
+- Visualization components (tree view, timelines, charts)  
+- Collaborative editing and permissions  
+- Provenance tracking for record changes  
+- Automated inference and narrative generation  
 
+### 6.2 External Integrations
+- GEDCOM X import/export pipelines  
+- Potential integration with FamilySearch APIs  
+- Optional OCR workflows  
 
-“Architecture is the art of making your future debugging sessions inevitable.”
+---
+
+## 7. References
+- GEDCOM X Specification  
+- Django REST Framework  
+- PostgreSQL JSON/JSONB  
+- `DATA_MODELS.md` — logical and implementation models  
+- `PROOF_STANDARD.md` — reasoning and conclusion structure
