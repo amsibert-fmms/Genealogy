@@ -1,4 +1,8 @@
-# ✅ GeneaX Validation Rules
+# ✅ GeneaX Validation Rules {#geneax-validation-rules}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 
 Every record in GeneaX is subject to strict validation based on:
 - The **GEDCOM X specification**
@@ -106,4 +110,3 @@ This document outlines validation rules enforced during:
 ---
 
 > “Data is sacred. You’re just borrowing it from the dead. Treat it with respect.”
-

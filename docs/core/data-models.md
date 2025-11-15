@@ -1,6 +1,10 @@
-# GeneaX Data Models
+# GeneaX Data Models {#geneax-data-models}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 This document defines the conceptual, logical, and implementation models for all genealogical entities.  
-It is organized according to the chapter structure defined in `MASTER_OUTLINE.md`.
+It is organized according to the chapter structure defined in the [master outline](../master-outline.md#master-outline).
 
 Each chapter follows the pattern:
 
@@ -241,7 +245,7 @@ genealogy/apps/sources/models/
 A Claim is a proposed genealogical assertion derived from one or more citations.  
 Claims may contradict each other and may have varying confidence levels.
 
-### Conclusion
+### Conclusion {#conclusion-model}
 A Conclusion is a reasoned determination about a person, event, or relationship.  
 Every Conclusion must be backed by a ProofStatement.
 
@@ -265,7 +269,7 @@ This ensures transparency and reproducibility.
 - confidence  
 - conflict_links[]  
 
-### Conclusion
+### Conclusion {#conclusion-logical}
 - subject  
 - selected_claims[]  
 - proofstatement_id  

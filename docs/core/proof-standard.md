@@ -1,6 +1,10 @@
-# GeneaX Proof Standard (GXPS)
+# GeneaX Proof Standard (GXPS) {#geneax-proof-standard}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 The GeneaX Proof Standard defines how genealogical claims, conclusions, and proof statements are evaluated, documented, and validated within the system.  
-This document corresponds to **Chapter 5** in `MASTER_OUTLINE.md`.
+This document corresponds to **Chapter 5** in the [master outline](../master-outline.md#chapter-5-proof).
 
 ---
 
@@ -12,7 +16,7 @@ The GeneaX Proof Standard (GXPS) adapts traditional genealogical reasoning into 
 - Every proof statement is traceable to its sources  
 - Conflicts are identified, recorded, and resolvable  
 
-GXPS integrates directly with the Tier 2 Logical Models for Claims, Conclusions, and ProofStatements described in `DATA_MODELS.md`.
+GXPS integrates directly with the Tier 2 Logical Models for Claims, Conclusions, and ProofStatements described in the [data models](data-models.md#geneax-data-models).
 
 ---
 
@@ -37,11 +41,11 @@ It ensures that genealogical data remains verifiable, maintainable, and interope
 - **Tier 2** defines the full logical data model for ProofStatements, Conclusions, and associated relationships.  
 - **Tier 3** defines the Django ORM implementation for the reasoning layer.
 
-Relevant models in `DATA_MODELS.md`:
+Relevant models in the [data models](data-models.md#geneax-data-models):
 
-- `#proof-model`  
-- `#fact-model`  
-- Conclusion model section  
+- [Proof model](data-models.md#proof-model)
+- [Fact model](data-models.md#fact-model)
+- [Conclusion model](data-models.md#conclusion-model)
 
 ---
 
@@ -59,7 +63,7 @@ A *Claim* (or Fact Assertion) represents a proposed genealogical statement such 
 - Claims may represent low-, medium-, or high-confidence statements.
 
 ### Model Links
-Logical structure: `DATA_MODELS.md#fact-model`  
+Logical structure: [Data models — Fact](data-models.md#fact-model)
 Citation structure: `Chapter 4 — Sources & Citations`
 
 ---
@@ -74,7 +78,7 @@ A *Conclusion* represents a reasoned determination about a person, event, or rel
 - Should represent the best-supported interpretation of the evidence  
 
 ### Model Links
-Logical structure: `DATA_MODELS.md` (Conclusion Model section)
+Logical structure: [Data models — Conclusion](data-models.md#conclusion-model)
 
 ---
 
@@ -88,8 +92,8 @@ A *ProofStatement* is a structured narrative explaining how a conclusion was rea
 - Required for any conclusion exported or published  
 
 ### Model Links
-Logical structure: `DATA_MODELS.md#proof-model`  
-Standard mapping: `GEDCOMX_COMPLIANCE.md`
+Logical structure: [Data models — Proof](data-models.md#proof-model)
+Standard mapping: [GEDCOM X compliance](gedcomx-compliance.md#geneax-gedcomx)
 
 ---
 
@@ -164,7 +168,7 @@ GXPS requires the following validations:
 - Missing or outdated citations must be flagged  
 - Speculative statements must be excluded from export  
 
-Rules are detailed in `VALIDATION_RULES.md`.
+Rules are detailed in the [validation rules](validation-rules.md#geneax-validation-rules).
 
 ---
 

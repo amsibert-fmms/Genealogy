@@ -1,6 +1,10 @@
-# GeneaX Features
-This document summarizes the current, planned, and future features of the GeneaX platform.  
-All features are organized to align with the chapter structure defined in `MASTER_OUTLINE.md`.
+# GeneaX Features {#geneax-features}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
+This document summarizes the current, planned, and future features of the GeneaX platform.
+All features are organized to align with the chapter structure defined in the [master outline](../master-outline.md#master-outline).
 
 ---
 
@@ -68,7 +72,7 @@ Development stages:
 ### Implemented
 - SourceDescription structure (Tier 2)  
 - Basic citation support  
-- Fact model design in DATA_MODELS
+- Fact model design documented in the [data models](data-models.md#chapter-4-sources) reference
 
 ### Planned
 - Source ingestion and structured extraction workflows  
@@ -84,7 +88,7 @@ Development stages:
 ## Chapter 5 — Claims, Conclusions, and Proof
 ### Implemented
 - ProofStatement model (Tier 2)  
-- Conceptual reasoning framework defined in `PROOF_STANDARD.md`
+- Conceptual reasoning framework defined in the [proof standard](proof-standard.md#geneax-proof-standard)
 
 ### Planned
 - Conclusion model implementation  
@@ -168,8 +172,8 @@ The following ideas are speculative and not yet part of the roadmap:
 ---
 
 # 5. References
-- `MASTER_OUTLINE.md` — conceptual framework  
-- `DATA_MODELS.md` — logical and implementation details  
-- `VALIDATION_RULES.md` — constraints and integrity requirements  
-- `PROOF_STANDARD.md` — evidence and reasoning model  
-- `GEDCOMX_COMPLIANCE.md` — alignment with the GEDCOM X specification
+- [Master outline](../master-outline.md#master-outline) — conceptual framework
+- [Data models](data-models.md#geneax-data-models) — logical and implementation details
+- [Validation rules](validation-rules.md#geneax-validation-rules) — constraints and integrity requirements
+- [Proof standard](proof-standard.md#geneax-proof-standard) — evidence and reasoning model
+- [GEDCOM X compliance](gedcomx-compliance.md#geneax-gedcomx) — alignment with the GEDCOM X specification

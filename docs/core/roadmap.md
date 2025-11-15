@@ -1,4 +1,8 @@
-# 🗺️ GeneaX Development Roadmap
+# 🗺️ GeneaX Development Roadmap {#geneax-roadmap}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 
 This roadmap outlines major milestones, phases, and development priorities for GeneaX — a Django-based genealogy platform built for structured, evidence-backed family history.
 
@@ -72,7 +76,7 @@ This roadmap outlines major milestones, phases, and development priorities for G
 - Keep commits small, readable, and honest
 - Link every model/endpoint to the related GEDCOM X doc
 - All contributions must pass linting and include tests
-- Bonus: leave a trail of breadcrumbs in the `NOTES.md` file
+- Bonus: leave a trail of breadcrumbs in [NOTES.md](../NOTES.md) (create it if it does not exist yet)
 
 ---
 
