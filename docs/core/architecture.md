@@ -1,5 +1,9 @@
-# GeneaX Architecture  
-Foundational description of the GeneaX application structure and its alignment with the chapter and tier model defined in `MASTER_OUTLINE.md`.
+# GeneaX Architecture {#geneax-architecture}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
+Foundational description of the GeneaX application structure and its alignment with the chapter and tier model defined in the [master outline](../master-outline.md#master-outline).
 
 ---
 
@@ -7,7 +11,7 @@ Foundational description of the GeneaX application structure and its alignment w
 GeneaX is a modular Django-based application designed around the principles of:
 
 - **Standards alignment** — Primary modeling follows the GEDCOM X specification.  
-- **Data integrity** — Entities, relationships, and facts reflect explicit rules defined in `VALIDATION_RULES.md`.  
+- **Data integrity** — Entities, relationships, and facts reflect explicit rules defined in the [validation rules](validation-rules.md#geneax-validation-rules).
 - **Traceable reasoning** — Evidence → Claims → Conclusions → ProofStatements mirror genealogical best practices.  
 - **Incremental growth** — Architecture supports expansion from Tier 1 (conceptual) to Tier 3 (implementation).  
 
@@ -16,7 +20,7 @@ This document describes how GeneaX maps domain concepts (Chapters 1–6) into a 
 ---
 
 ## 2. Architectural Layers  
-The system is organized into three major layers that correspond to the tiers defined in `MASTER_OUTLINE.md`.
+The system is organized into three major layers that correspond to the tiers defined in the [master outline](../master-outline.md#master-outline).
 
 ### 2.1 Domain Layer (Tier 2 → Tier 3)  
 Located primarily in Django models, this layer implements:
@@ -28,13 +32,13 @@ Located primarily in Django models, this layer implements:
 - Claims, Conclusions, Proof (Chapter 5)  
 - CrossReference, FamilyAppearance (Chapter 6)
 
-These models implement the **Tier 3 Implementation Model** and map directly onto the **Tier 2 Logical Model** described in `DATA_MODELS.md`.
+These models implement the **Tier 3 Implementation Model** and map directly onto the **Tier 2 Logical Model** described in the [data models](data-models.md#geneax-data-models).
 
 ### 2.2 Application Layer  
 Contains the internal logic of GeneaX, including:
 
 - Business rules  
-- Validation routines (aligned with `VALIDATION_RULES.md`)  
+- Validation routines (aligned with the [validation rules](validation-rules.md#geneax-validation-rules))
 - Data services and orchestration  
 - Import/export workflows  
 - GEDCOM X converters  
@@ -50,7 +54,7 @@ Exposes data and capabilities through:
 - Future GraphQL endpoint  
 
 API endpoints map directly to Tier 3 implementation classes.  
-See `API_REFERENCE.md` for endpoint-level details.
+See the [API reference](api-reference.md#geneax-api-reference) for endpoint-level details.
 
 ---
 
@@ -94,7 +98,7 @@ Each directory corresponds to a conceptual chapter or a shared cross-cutting con
 ### 4.1 Creation Flow
 1. Client submits structured data through API  
 2. Serializer validates input  
-3. Logical rules applied (`VALIDATION_RULES.md`)  
+3. Logical rules applied ([validation rules](validation-rules.md#geneax-validation-rules))
 4. Instance saved to ORM  
 5. Optional: reasoning layer updates claims or conclusions  
 
@@ -106,9 +110,9 @@ Each directory corresponds to a conceptual chapter or a shared cross-cutting con
 
 ### 4.3 Import Flow (GEDCOM X)
 1. GEDCOM X input parsed  
-2. Mapped to Tier 2 logical entities (`GEDCOMX_COMPLIANCE.md`)  
-3. Logical validation  
-4. ORM instances created or merged  
+2. Mapped to Tier 2 logical entities ([GEDCOM X compliance](gedcomx-compliance.md#geneax-gedcomx))
+3. Logical validation (see [validation rules](validation-rules.md#geneax-validation-rules))
+4. ORM instances created or merged (document interoperability notes in [GEDCOM X compliance](gedcomx-compliance.md#geneax-gedcomx))
 
 ---
 
@@ -147,5 +151,5 @@ The architecture is designed for incremental extension.
 - GEDCOM X Specification  
 - Django REST Framework  
 - PostgreSQL JSON/JSONB  
-- `DATA_MODELS.md` — logical and implementation models  
-- `PROOF_STANDARD.md` — reasoning and conclusion structure
+- [Data models](data-models.md#geneax-data-models) — logical and implementation models
+- [Proof standard](proof-standard.md#geneax-proof-standard) — reasoning and conclusion structure

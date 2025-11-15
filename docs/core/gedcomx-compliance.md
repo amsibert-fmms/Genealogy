@@ -1,4 +1,8 @@
-# GEDCOM X Compliance
+# GEDCOM X Compliance {#geneax-gedcomx}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 This document describes how GeneaX aligns with the GEDCOM X Specification.  
 It corresponds primarily to **Tier 2 Logical Models** across Chapters 1–4, with limited extensions in Chapters 5–6.
 
@@ -55,7 +59,7 @@ Mappings include:
 - Identifiers  
 - Links to relationships and events  
 
-See `DATA_MODELS.md#person-model`.
+See [Data models — Person](data-models.md#person-model).
 
 ---
 
@@ -70,7 +74,7 @@ Supported types include:
 
 Extended types (guardian, adoptive, sibling) are GeneaX-specific but remain structurally compatible.
 
-See `DATA_MODELS.md#relationship-model`.
+See [Data models — Relationship](data-models.md#relationship-model).
 
 ---
 
@@ -85,7 +89,7 @@ Mappings include:
 - Participating persons  
 - Event roles  
 
-See `DATA_MODELS.md#event-model`.
+See [Data models — Event](data-models.md#event-model).
 
 ---
 
@@ -101,7 +105,7 @@ Includes:
 
 GeneaX adds structured identifiers useful for publication mapping (Chapter 6).
 
-See `DATA_MODELS.md#source-model`.
+See [Data models — Source](data-models.md#source-model).
 
 ---
 
@@ -166,7 +170,7 @@ GeneaX performs the following validations for GEDCOM X compliance:
 - Date and place formats must follow GEDCOM X formatting conventions.  
 - Unsupported or malformed structures must be flagged and quarantined.  
 
-See `VALIDATION_RULES.md` for full detail.
+See the [validation rules](validation-rules.md#geneax-validation-rules) for full detail.
 
 ---
 
@@ -202,4 +206,3 @@ GeneaX aligns closely with the GEDCOM X specification while extending it in area
 - Data integrity and validation workflows  
 
 This compliance layer ensures high-quality genealogical interoperability across systems.
-

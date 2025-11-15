@@ -6,6 +6,7 @@ A single app Django project for learning Django and managing genealogy data.
 
 - **GeneaX**: Django project configuration
 - **genealogy**: Main Django application for genealogy features
+- **docs**: Documentation hub covering architecture, data models, and developer workflows
 
 ## Setup
 
@@ -30,6 +31,11 @@ A single app Django project for learning Django and managing genealogy data.
    ```
 
 5. Access the application at http://127.0.0.1:8000/
+
+## Documentation
+- Start with the [docs index](docs/index.md) for a guided map of every reference.
+- Read the [documentation overview](docs/README.md) for project goals and background.
+- Follow the [developer hub](docs/developer/README.md) for installation, configuration, and deployment workflows.
 
 ## Requirements
 

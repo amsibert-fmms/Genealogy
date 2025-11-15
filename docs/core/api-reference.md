@@ -1,13 +1,17 @@
-# GeneaX API Reference
+# GeneaX API Reference {#geneax-api-reference}
+_Last updated: 2025-11-15_
+
+Related references: [Documentation home](../index.md#geneax-docs-home) · [Master outline](../master-outline.md#master-outline)
+
 This document describes the public API for GeneaX.  
-Each endpoint corresponds to a **Tier 3 Implementation Model** and maps to the domain areas defined in `MASTER_OUTLINE.md`.
+Each endpoint corresponds to a **Tier 3 Implementation Model** and maps to the domain areas defined in the [master outline](../master-outline.md#master-outline).
 
 All responses are JSON.  
 Authentication is required unless otherwise noted.
 
 For conceptual and logical definitions, see:
-- `MASTER_OUTLINE.md`
-- `DATA_MODELS.md`
+- [Master outline](../master-outline.md#master-outline)
+- [Data models](data-models.md#geneax-data-models)
 
 ---
 
@@ -41,7 +45,7 @@ The GeneaX API provides access to core genealogical data models:
 
 Endpoints follow Django REST Framework conventions.
 
-The API is organized according to the conceptual chapters in `MASTER_OUTLINE.md`:
+The API is organized according to the conceptual chapters in the [master outline](../master-outline.md#master-outline):
 
 - Chapter 1 — Person  
 - Chapter 2 — Event  
@@ -100,7 +104,7 @@ Tokens may be generated via:
 - A token-generation endpoint (if implemented)  
 - Management command  
 
-See `Developer_Docs/CONFIGURATION.md`.
+See the [configuration reference](../developer/configuration.md#geneax-configuration).
 
 
 ### 2.4 Unauthenticated Endpoints
@@ -325,4 +329,4 @@ Example response:
 - All responses are JSON.
 - Errors follow Django REST Framework format.
 - Endpoints correspond to Tier 3 Implementation Models.
-- See `DATA_MODELS.md` for definitions of fields, constraints, and relationships.
+- See the [data models](data-models.md#geneax-data-models) for definitions of fields, constraints, and relationships.
