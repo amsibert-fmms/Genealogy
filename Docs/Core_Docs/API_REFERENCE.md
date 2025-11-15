@@ -1,37 +1,82 @@
 # GeneaX API Reference
-This document provides the public API definitions for GeneaX.  
-Each endpoint corresponds to **Tier 3 Implementation Models** and maps to the domain areas defined in `MASTER_OUTLINE.md`.
+This document describes the public API for GeneaX.  
+Each endpoint corresponds to a **Tier 3 Implementation Model** and maps to the domain areas defined in `MASTER_OUTLINE.md`.
 
 All responses are JSON.  
 Authentication is required unless otherwise noted.
+
+For conceptual and logical definitions, see:
+- `MASTER_OUTLINE.md`
+- `DATA_MODELS.md`
+
+---
+
+# 0. Schema Conventions
+
+All resources follow these API conventions:
+
+- `id` is an integer primary key.
+- `created_at` and `updated_at` use ISO 8601 timestamps.
+- Related objects are referenced by numeric IDs unless expanded.
+- Errors follow Django REST Framework's JSON error structure.
+- Date values must use `YYYY-MM-DD` format when applicable.
+- Pagination format will follow DRF defaults (to be documented when implemented).
+- All POST and PATCH bodies must be JSON.
 
 ---
 
 # 1. Overview
 
-The GeneaX API provides access to core genealogical data structures including Persons, Events, Relationships, Sources, Citations, Claims, Conclusions, and ProofStatements.
+The GeneaX API provides access to core genealogical data models:
 
-All endpoints return JSON and follow Django REST Framework conventions.
+- Persons  
+- Events  
+- Relationships  
+- Sources  
+- Citations  
+- Claims  
+- Conclusions  
+- ProofStatements  
+- CrossReferences & FamilyAppearances  
 
-The API is organized according to the conceptual chapters defined in `MASTER_OUTLINE.md`:
+Endpoints follow Django REST Framework conventions.
 
-- Chapter 1 — Person
-- Chapter 2 — Event
-- Chapter 3 — Relationship
-- Chapter 4 — Sources & Citations
-- Chapter 5 — Claims, Conclusions, Proof
-- Chapter 6 — Numbering & Cross-References
+The API is organized according to the conceptual chapters in `MASTER_OUTLINE.md`:
+
+- Chapter 1 — Person  
+- Chapter 2 — Event  
+- Chapter 3 — Relationship  
+- Chapter 4 — Sources & Citations  
+- Chapter 5 — Claims, Conclusions, Proof  
+- Chapter 6 — Numbering & Cross-References  
+
+---
+
+## 1.1 Query Parameters
+
+Most list endpoints will support search and filtering as the implementation matures.  
+Planned filters include:
+
+- Name or text search  
+- Event type  
+- Date range (before/after)  
+- Participant role  
+- Citation-based filtering  
+- Cross-reference filtering  
+
+Filtering behavior will be documented as features are added.
 
 ---
 
 # 2. Authentication
 
-All GeneaX API endpoints require authentication unless explicitly noted.
-The system uses token-based authentication.
+All GeneaX API endpoints require authentication unless otherwise stated.
+
+GeneaX uses token-based authentication.
 
 ### 2.1 Required Headers
 
-Requests must include the following headers:
+Requests must include:
 
 Authorization: Token <your_token>
 Content-Type: application/json
@@ -49,19 +94,23 @@ Authorization: Token 123456abcde
 ### 2.3 Obtaining a Token
 
 Token creation depends on deployment configuration.  
-Tokens may be issued via:
+Tokens may be generated via:
 
-- Django admin
-- A token-generation endpoint (if implemented)
-- A management command
+- Django admin  
+- A token-generation endpoint (if implemented)  
+- Management command  
 
-See the setup instructions in `Developer_Docs/CONFIGURATION.md`.
+See `Developer_Docs/CONFIGURATION.md`.
 
 
 ### 2.4 Unauthenticated Endpoints
 
-Most endpoints require authentication.  
-Unauthenticated access may be provided in the future for system health checks or metadata endpoints.
+Future versions may include unauthenticated endpoints for:
+
+- Health checks  
+- Basic metadata  
+
+All genealogical endpoints require authentication.
 
 ---
 
@@ -75,6 +124,11 @@ Returns a single Person.
 
 ### POST /api/person/
 Creates a Person.
+Body example:
+{
+"primary_name": "Jane Doe",
+"gender": "female"
+}
 
 ### PATCH /api/person/<id>/
 Updates a Person.
@@ -87,16 +141,29 @@ Deletes a Person.
 # 4. Event Endpoints (Chapter 2)
 
 ### GET /api/event/
-Returns a list of Events.
+List Events.
 
 ### GET /api/event/<id>/
-Returns a single Event.
+Retrieve an Event.
 
 ### POST /api/event/
-Creates an Event.
+Create an Event.
+
+Body example:
+{
+"type": "birth",
+"date": "1842-01-01",
+"place": "Boston",
+"participants": [
+{"person": 42, "role": "principal"}
+]
+}
 
 ### PATCH /api/event/<id>/
-Updates an Event.
+Update an Event.
+
+### DELETE /api/event/<id>/  *(optional, if implemented)*
+Delete an Event.
 
 ---
 
@@ -149,6 +216,14 @@ Retrieve a Citation.
 ### POST /api/citation/
 Create a Citation.
 
+Body must follow the Citation Target Rules:
+{
+"source": 5,
+"target_type": "person",
+"target_id": 42,
+"detail": "Page 12, Record 87"
+}
+
 ### PATCH /api/citation/<id>/
 Update a Citation.
 
@@ -167,6 +242,14 @@ List Claims.
 ### POST /api/claim/
 Create a Claim.
 
+Claims must include at least one citation:
+{
+"statement": "John Smith was born in 1842",
+"subject": 42,
+"citations": [3, 4]
+}
+
+---
 
 ## Conclusion Endpoints
 
@@ -176,13 +259,30 @@ List Conclusions.
 ### POST /api/conclusion/
 Create a Conclusion.
 
-## Proof Endpoints
+Conclusions must reference a ProofStatement:
+
+{
+"subject": 42,
+"selected_claims": [12, 13],
+"proofstatement": 7
+}
+
+---
+
+## ProofStatement Endpoints
 
 ### GET /api/proof/
 List ProofStatements.
 
 ### POST /api/proof/
 Create a ProofStatement.
+
+Body example:
+{
+"conclusion": 9,
+"narrative": "After evaluating all available evidence...",
+"referenced_claims": [12, 13]
+}
 
 ---
 
@@ -196,6 +296,8 @@ List CrossReferences.
 ### POST /api/xref/
 Create a CrossReference.
 
+---
+
 ## FamilyAppearance Endpoints
 
 ### GET /api/familyappearance/
@@ -208,12 +310,12 @@ Create a FamilyAppearance.
 
 # 10. Export Endpoints
 
-## GET /api/export/gedcomx/
-Exports data in GEDCOM X JSON-LD format.
+### GET /api/export/gedcomx/
+Export data in GEDCOM X JSON-LD format.
 
-Response example:
+Example response:
 {
-  "download_url": "/exports/geneax-2025-11-15.json"
+"download_url": "/exports/geneax-2025-11-15.json"
 }
 
 ---
@@ -221,6 +323,6 @@ Response example:
 # 11. Notes
 
 - All responses are JSON.
-- Errors follow Django REST Framework error formats.
-- Endpoint models correspond to the Tier 3 Implementation layer.
-- The logical data model is defined in `DATA_MODELS.md`.
+- Errors follow Django REST Framework format.
+- Endpoints correspond to Tier 3 Implementation Models.
+- See `DATA_MODELS.md` for definitions of fields, constraints, and relationships.
