@@ -1,0 +1,20 @@
+## 📜 `CHANGELOG.md`
+
+You can generate this with `git log`, or write it manually like a changelog bard.
+
+```markdown
+# 📜 Change Log
+
+## [0.1.0] — 2025-11-15
+### Added
+- Initial GEDCOM X model definitions
+- ProofStatement schema + API
+- Validation logic draft
+
+### Changed
+- Adjusted CrossReference enum handling
+
+### Removed
+- Hope
+
+> “This is where we pretend progress is linear.”
