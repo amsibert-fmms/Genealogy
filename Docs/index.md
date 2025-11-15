@@ -5,7 +5,7 @@ Welcome to **GeneaX**, a Django-based genealogy platform built for hands-on lear
 This index lists all project documentation files — so you can pretend there’s order in the chaos.
 
 For a **conceptual map of how everything fits together**, see:  
-👉 **[`MASTEROUTLINE.md`](MASTEROUTLINE.md)** — Chapters, tiers, and cross-document relationships.
+👉 **[`MasterOutline.md`](MasterOutline.md)** — Chapters, tiers, and cross-document relationships.
 
 ---
 
