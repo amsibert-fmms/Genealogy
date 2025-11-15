@@ -10,12 +10,12 @@ All responses are JSON. All endpoints require authentication unless noted.
 ### `GET /api/person/`
 Returns a list of people.
 
-**Query Params**:
+**Query Parameters:**
 - `search`: Filter by name
 - `gender`: Filter by gender
 - `book_ref`: Filter by cross-referenced book ID
 
-**Response**:
+**Response:**
 ```json
 {
   "count": 125,
@@ -31,11 +31,11 @@ Returns a list of people.
   ]
 }
 ```
-### POST /api/person/
 
+### `POST /api/person/`
 Creates a new person.
 
-Body:
+**Request Body:**
 ```json
 {
   "full_name": "John D. Miller",
@@ -45,17 +45,19 @@ Body:
 }
 ```
 
-🔗 Relationship Endpoints
-GET /api/relationship/
+---
 
+## 🔗 Relationship Endpoints
+
+### `GET /api/relationship/`
 Returns relationships between people.
 
-Query Params:
--type
--person_id
+**Query Parameters:**
+- `type`
+- `person_id`
 
-Response:
-
+**Response:**
+```json
 [
   {
     "person1": "uuid-a",
@@ -64,91 +66,132 @@ Response:
     "event": "event-id"
   }
 ]
+```
 
-POST /api/relationship/
+### `POST /api/relationship/`
+Creates a new relationship.
+
+**Request Body:**
+```json
 {
   "person1": "uuid-a",
   "person2": "uuid-b",
   "type": "ParentChild"
 }
+```
 
-🗓️ Event Endpoints
-GET /api/event/
+---
 
+## 🗓️ Event Endpoints
+
+### `GET /api/event/`
 Fetches recorded events.
 
-Response:
-
+**Response:**
+```json
 {
   "type": "Marriage",
   "date": "1885-06-10",
   "place": "place-id",
   "description": "Marriage of Eli Z. and Fannie M."
 }
+```
 
-POST /api/event/
+### `POST /api/event/`
+Creates a new event.
+
+**Request Body:**
+```json
 {
   "type": "LandSale",
   "date": "1860-11-12",
   "place": "place-id",
   "description": "Sold property to Jacob E."
 }
+```
 
-📚 Source Endpoints
-GET /api/source/
+---
+
+## 📚 Source Endpoints
+
+### `GET /api/source/`
+Returns source details.
+
+**Response:**
+```json
 {
   "source_key": "JH12",
   "title": "Descendants of John Hochstetler",
   "author": "A. Hochstetler"
 }
+```
 
-🧠 ProofStatement Endpoints
-GET /api/proofstatement/
+---
+
+## 🧠 ProofStatement Endpoints
+
+### `GET /api/proofstatement/`
+Fetches proof statements.
+
+**Response:**
+```json
 {
   "subject": "person-id",
   "claim": "Jacob is the son of John.",
   "confidence_level": "probable"
 }
+```
 
-POST /api/proofstatement/
+### `POST /api/proofstatement/`
+Creates a new proof statement.
+
+**Request Body:**
+```json
 {
   "subject": "person-id",
   "claim": "Barbara was the daughter of Eli.",
   "analysis": "She appears in the 1900 census in his household.",
   "confidence_level": "possible"
 }
+```
 
-📥 Import Endpoint
-POST /api/import/
+---
 
+## 📥 Import Endpoint
+
+### `POST /api/import/`
 Upload a GEDCOM X JSON-LD file.
 
-Request: multipart/form-data
+**Request:** `multipart/form-data`
 
-Response:
-
+**Response:**
+```json
 {
   "status": "success",
   "imported_records": 143
 }
+```
 
-📤 Export Endpoint
-GET /api/export/?format=gedcomx
+---
 
+## 📤 Export Endpoint
+
+### `GET /api/export/?format=gedcomx`
 Returns downloadable GEDCOM X or GeneaX JSON export.
 
-Response:
-
+**Response:**
+```json
 {
   "download_url": "/exports/geneax-2025-11-15.json"
 }
+```
 
-🧾 Notes
+---
 
-All endpoints assume application/json.
+## 🧾 Notes
 
-Use Authorization: Token <your_token> for authenticated access.
+- All endpoints assume `application/json`.
+- Use `Authorization: Token <your_token>` for authenticated access.
+- Errors follow standard DRF (Django Rest Framework) error structure.
 
-Errors follow standard DRF error structure.
-
-“If it has an endpoint, someone will try to break it. Be ready.”
+> “If it has an endpoint, someone will try to break it. Be ready.”
