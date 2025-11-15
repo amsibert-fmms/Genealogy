@@ -1,151 +1,342 @@
-# GeneaX Data Models  
-Structured by chapters that correspond to core genealogical domains.  
-Each chapter contains Tier 1 (conceptual), Tier 2 (logical), and Tier 3 (implementation) descriptions.
+# GeneaX Data Models
+This document defines the conceptual, logical, and implementation models for all genealogical entities.  
+It is organized according to the chapter structure defined in `MASTER_OUTLINE.md`.
+
+Each chapter follows the pattern:
+
+- Tier 1 — Conceptual Model  
+- Tier 2 — Logical Model  
+- Tier 3 — Implementation Model (Django ORM)
 
 ---
 
 # Chapter 1 — Person  {#chapter-1-person}
-> Linked from MASTER_OUTLINE → Chapter 1
 
 ## Tier 1 — Conceptual Model
-A Person represents an individual human subject.  
-Conceptually includes multiple names, biological attributes, and participation in events and relationships.
+A Person represents an individual human being.  
+Conceptually, a person may have:
+
+- Multiple names  
+- Gender identity  
+- Biographical facts  
+- Participation in events  
+- Relationships to other persons  
+- Associated claims, citations, and conclusions  
+
+Persons are the foundation of genealogical data.
+
+---
 
 ## Tier 2 — Logical Model  {#person-model}
-Logical attributes include:
-- Identifiers  
-- Names (primary and alternate)  
-- Birth/death facts  
-- Gender identity  
-- Collections of events, relationships, citations, and facts  
 
-GEDCOM-X mapping: `GEDCOMX_COMPLIANCE.md#person`
+### Attributes
+- Identifiers  
+- Primary and alternate names  
+- Birth and death facts  
+- Gender  
+- Unique ID for exports  
+- Event participation list  
+- Relationship roles  
+
+### Relationships
+- Many events through EventRole  
+- Many relationships  
+- Many citations  
+- Many claims and conclusions  
+
+### GEDCOM X Mapping
+Mapped to GEDCOM X `Person`.
+
+---
 
 ## Tier 3 — Implementation Model
-See Django ORM implementation in `genealogy/models/person.py` (if present).  
-Document gaps relative to Tier 2 in this section.
+
+### Location in Repository
+genealogy/apps/persons/models/person.py
+
+
+### Implementation Requirements
+- Must include all Tier 2 fields  
+- Must conform to validation rules for persons (name presence, date formats, etc.)  
+- Must use ISO 8601–compatible date fields  
+- Related names must use consistent `related_name` conventions  
+
+### Documentation Requirements
+- List all implemented Django fields  
+- Identify any Tier 2 fields not yet implemented  
+- Note unique constraints and validation logic  
 
 ---
 
 # Chapter 2 — Event  {#chapter-2-event}
-> Linked from MASTER_OUTLINE → Chapter 2
 
 ## Tier 1 — Conceptual Model
-An Event is a discrete occurrence associated with one or more Persons.
+An Event represents an occurrence involving one or more persons.  
+Examples: birth, marriage, migration, death, residence.
+
+Events carry:
+
+- Type  
+- Date or date range  
+- Place  
+- Participating persons and their roles  
+
+---
 
 ## Tier 2 — Logical Model  {#event-model}
-Logical components:
-- Event type  
-- Date(s)  
-- Place  
-- Roles of participating persons  
 
-GEDCOM-X mapping: `GEDCOMX_COMPLIANCE.md#event`
+### Attributes
+- type  
+- date / date_range  
+- place  
+- identifiers  
+- description (optional)
+
+### Relationships
+- One-to-many EventRole for participants
+
+### GEDCOM X Mapping
+Mapped to `Event` and `EventRole`.
+
+---
 
 ## Tier 3 — Implementation Model
-List fields and relationships currently implemented.  
-Document missing components for future expansion.
+
+### Location in Repository
+genealogy/apps/events/models/event.py
+
+
+### Implementation Requirements
+- Event types should use enumerations  
+- Date and place fields must align with GEDCOM X rules  
+- Participant roles must enforce allowed combinations  
+
+### Documentation Requirements
+- List implemented fields  
+- Identify missing roles or validations  
 
 ---
 
 # Chapter 3 — Relationship  {#chapter-3-relationship}
-> Linked from MASTER_OUTLINE → Chapter 3
 
 ## Tier 1 — Conceptual Model
-A Relationship is a structured connection between two Persons (e.g. parent–child, spouse).
-
-## Tier 2 — Logical Model  {#relationship-model}
-Defines:
-- Type  
-- Person A  
-- Person B  
-- Optional temporal bounds  
-- Supporting citations  
-
-## Tier 3 — Implementation Model
-Document the current Django Relationship model.
+A Relationship defines a structured connection between two persons:  
+parent–child, spouse, partner, guardian, adoptive relationships, etc.
 
 ---
 
-# Chapter 4 — Sources & Citations  {#chapter-4-sources}
-> Linked from MASTER_OUTLINE → Chapter 4
+## Tier 2 — Logical Model  {#relationship-model}
 
-## Tier 1 — Conceptual Model
-- **Source**: An information-bearing artifact (record, book, certificate).  
-- **Citation**: A reference linking a fact or claim to a source.  
-- **Fact/Claim**: A proposed piece of genealogical information.
+### Attributes
+- type  
+- person_a  
+- person_b  
+- start_date / end_date (optional)  
+- notes  
 
-## Tier 2 — Logical Model
-### Source Model  {#source-model}
-Attributes and identifiers.
+### GEDCOM X Mapping
+Mapped to `Relationship`.
 
-### Citation Model  {#citation-model}
-Links claims/facts to sources.
-
-### Fact Model  {#fact-model}
-Represents a specific genealogical assertion.
+---
 
 ## Tier 3 — Implementation Model
-Document existing Source and Citation ORM structures.
+
+### Location in Repository
+genealogy/apps/relationships/models/relationship.py
+
+
+### Implementation Requirements
+- Enforce valid relationship types  
+- Prevent logically impossible relationships  
+- Optional temporal boundaries  
+
+### Documentation Requirements
+- List implemented types  
+- Document implementation gaps  
+
+---
+
+# Chapter 4 — Sources, Citations, and Facts  {#chapter-4-sources}
+
+## Tier 1 — Conceptual Model
+
+### Source
+An information-bearing artifact (record, certificate, book, census page).  
+
+### Citation
+A reference linking a Fact or Claim to a Source.  
+
+### Fact (Claim)
+An asserted piece of genealogical information.
+
+---
+
+## Tier 2 — Logical Model
+
+### SourceDescription  {#source-model}
+- title  
+- publication_info  
+- identifiers  
+- extraction notes  
+
+### Citation  {#citation-model}
+- source_id  
+- target_type (Person/Event/Relationship/Fact/Conclusion)  
+- target_id  
+- detail / page / locator  
+
+### Fact (Claim)  {#fact-model}
+- statement  
+- subject  
+- citations[]  
+- confidence_level  
+- conflict_links[]  
+
+---
+
+## Citation Target Rules (New Clarification)
+
+### Allowed targets
+A Citation may point **only** to:
+
+- Person  
+- Event  
+- Relationship  
+- Fact (Claim)  
+- Conclusion  
+
+### Prohibited targets
+- Citations may **not** reference other citations.  
+- Citations may not reference ProofStatements.
+
+### Cardinality
+- Claims must have ≥ 1 Citation.  
+- Persons/Events/Relationships may have 0–N Citations.  
+- Conclusions cite ProofStatements, not raw sources.
+
+---
+
+## Tier 3 — Implementation Model
+
+### Location in Repository
+genealogy/apps/sources/models/
+
+
+### Implementation Requirements
+- Foreign keys must preserve target rules through validators  
+- Citation must enforce valid target types  
+- Sources must support GEDCOM X-compatible metadata fields  
+
+### Documentation Requirements
+- List implemented fields  
+- Identify extensions beyond GEDCOM X  
 
 ---
 
 # Chapter 5 — Claims, Conclusions, Proof  {#chapter-5-proof}
-> Linked from MASTER_OUTLINE → Chapter 5
 
-## Tier 1 — Conceptual Model
-The genealogical reasoning system:
-- Claims (assertions)
-- Conclusions (evaluated determinations)
-- ProofStatements (justifications)
+## Tier 1 — Conceptual Model (Expanded)
+
+### Claim
+A Claim is a proposed genealogical assertion derived from one or more citations.  
+Claims may contradict each other and may have varying confidence levels.
+
+### Conclusion
+A Conclusion is a reasoned determination about a person, event, or relationship.  
+Every Conclusion must be backed by a ProofStatement.
+
+### ProofStatement
+A ProofStatement is a structured narrative explaining:
+
+- Which claims were evaluated  
+- How conflicts were resolved  
+- Why the conclusion was chosen  
+
+This ensures transparency and reproducibility.
+
+---
 
 ## Tier 2 — Logical Model
-### ProofStatement Model  {#proof-model}
-Narrative synthesis of evidence.
 
-### Conclusion Model
-Represents final determinations about persons, events, or relationships.
+### Claim
+- statement  
+- subject  
+- citations[]  
+- confidence  
+- conflict_links[]  
+
+### Conclusion
+- subject  
+- selected_claims[]  
+- proofstatement_id  
+- confidence  
+- superseded_claims[]  
+
+### ProofStatement  {#proof-model}
+- conclusion_id  
+- narrative (string or structured block list)  
+- referenced_claims[]  
+- reviewer / created_by  
+- timestamps  
+
+---
 
 ## Tier 3 — Implementation Model
-State current implementation and gaps.
+
+### Location in Repository
+genealogy/apps/reasoning/models/
+
+
+### Implementation Requirements
+- Claims must enforce ≥1 citation rule  
+- Conclusions must enforce presence of a ProofStatement  
+- ProofStatements must support markdown or structured text  
+
+### Documentation Requirements
+- Document implemented claim structure  
+- Note reasoning automation plans (future)  
 
 ---
 
 # Chapter 6 — Numbering, Cross-References, Appearances  {#chapter-6-references}
-> Linked from MASTER_OUTLINE → Chapter 6
 
 ## Tier 1 — Conceptual Model
-Models for interacting with external genealogical publications:
-- Numbering systems  
-- Family group appearances  
-- Person references  
+Models for interacting with genealogical publications:
 
-## Tier 2 — Logical Model
-### CrossReference Model  {#xref-model}
-Handles numbering schemes.
-
-### FamilyAppearance Model  {#familyappearance-model}
-Represents a person or family within a structured publication.
-
-### GeneratedConclusion Model  {#generatedconclusion-model}
-Future automation outputs.
-
-## Tier 3 — Implementation Model
-Document current ORM implementations.
+- Cross-reference systems  
+- Numbering schemes  
+- Family appearance mappings  
 
 ---
 
-# Implementation Status Overview
+## Tier 2 — Logical Model
 
-| Model               | Status        | Notes |
-|--------------------|---------------|-------|
-| Person             | Documented    | Schema planned; partial implementation. |
-| Event              | Documented    | Aligned with GEDCOM-X core. |
-| Relationship       | Documented    | Validation pending. |
-| SourceDescription  | Documented    | Supports publications and identifiers. |
-| Citation           | Documented    | Connects sources to claims. |
-| ProofStatement     | Documented    | Logical structure complete. |
-| CrossReference     | Documented    | Supports numbering systems. |
-| FamilyAppearance   | Documented    | Publication-contextual placement. |
-| GeneratedConclusion| Documented    | Reserved for future inference. |
+### CrossReference Model  {#xref-model}
+- number  
+- type  
+- associated_person  
 
+### FamilyAppearance Model  {#familyappearance-model}
+- person  
+- family group identifier  
+- appearance order  
+
+### GeneratedConclusion Model  {#generatedconclusion-model}
+- auto-generated narrative  
+- links to conclusions  
+
+---
+
+## Tier 3 — Implementation Model
+
+### Location in Repository
+genealogy/apps/publications/models/
+
+
+### Implementation Requirements
+- Must maintain stable identifiers for publication output  
+- Must support export formatting rules  
+
+### Documentation Requirements
+- Document numbering formats  
+- Identify unsupported publication structures  
