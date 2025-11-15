@@ -1,0 +1,635 @@
+# Use Cases - Genealogy Application
+
+## Document Information
+**Version:** 1.0  
+**Last Updated:** 2025-11-15  
+**Status:** Draft
+
+## Table of Contents
+1. [UC-001: Register New User Account](#uc-001-register-new-user-account)
+2. [UC-002: Add New Person](#uc-002-add-new-person)
+3. [UC-003: Establish Parent-Child Relationship](#uc-003-establish-parent-child-relationship)
+4. [UC-004: Import GEDCOM File](#uc-004-import-gedcom-file)
+5. [UC-005: Search for Person](#uc-005-search-for-person)
+6. [UC-006: Merge Duplicate Persons](#uc-006-merge-duplicate-persons)
+7. [UC-007: Attach Photo to Person](#uc-007-attach-photo-to-person)
+8. [UC-008: Export Family Tree as GEDCOM](#uc-008-export-family-tree-as-gedcom)
+
+---
+
+## UC-001: Register New User Account
+
+### Basic Information
+- **ID:** UC-001
+- **Name:** Register New User Account
+- **Priority:** High
+- **Complexity:** Medium
+- **Related User Story:** US-014
+
+### Actors
+- **Primary:** New User
+- **Secondary:** Email Service
+
+### Preconditions
+- User has valid email address
+- User has internet connection
+- Email service is operational
+
+### Postconditions
+- **Success:** User account created and verification email sent
+- **Failure:** User notified of registration error
+
+### Main Success Scenario
+1. User navigates to registration page
+2. System displays registration form
+3. User enters email address
+4. User creates password
+5. User confirms password
+6. User accepts terms of service
+7. User clicks "Register" button
+8. System validates email format
+9. System validates password strength (min 8 chars, upper, lower, number, special)
+10. System checks passwords match
+11. System verifies email not already registered
+12. System creates user account (status: unverified)
+13. System generates verification token
+14. System sends verification email to user
+15. System displays "Check your email" message
+16. User opens email
+17. User clicks verification link
+18. System validates token
+19. System activates account (status: verified)
+20. System redirects to login page
+21. System displays "Account verified" message
+
+### Alternative Flows
+
+#### 3a: Invalid Email Format
+- 3a1. System displays error: "Invalid email address"
+- 3a2. User corrects email
+- 3a3. Return to step 4
+
+#### 5a: Weak Password
+- 5a1. System displays password strength indicator
+- 5a2. System shows requirements not met
+- 5a3. User strengthens password
+- 5a4. Return to step 6
+
+#### 6a: Passwords Don't Match
+- 6a1. System displays error: "Passwords do not match"
+- 6a2. User re-enters confirmation password
+- 6a3. Return to step 7
+
+#### 11a: Email Already Registered
+- 11a1. System displays error: "Email already registered"
+- 11a2. System offers "Forgot password?" link
+- 11a3. Use case ends
+
+#### 14a: Email Delivery Fails
+- 14a1. System logs error
+- 14a2. System displays message with retry option
+- 14a3. User clicks "Resend verification email"
+- 14a4. Return to step 13
+
+#### 18a: Invalid or Expired Token
+- 18a1. System displays "Invalid or expired link"
+- 18a2. System offers to resend verification email
+- 18a3. If user accepts, return to step 13
+- 18a4. Otherwise, use case ends
+
+### Exception Flows
+
+#### E1: System Error During Registration
+- E1.1. System logs error details
+- E1.2. System displays "Registration failed. Please try again."
+- E1.3. User clicks "Try Again"
+- E1.4. Return to step 1
+
+### Business Rules
+- BR-001: Email addresses must be unique
+- BR-002: Passwords must be minimum 8 characters
+- BR-003: Passwords must contain uppercase, lowercase, number, and special character
+- BR-004: Verification tokens expire after 24 hours
+- BR-005: Unverified accounts are deleted after 7 days
+
+### Special Requirements
+- SR-001: Registration page must be accessible (WCAG 2.1 AA)
+- SR-002: Password fields must mask input
+- SR-003: System must use HTTPS for all communication
+- SR-004: Verification email must be sent within 30 seconds
+
+### Frequency of Use
+- Expected: 50-100 registrations per day (growing)
+
+---
+
+## UC-002: Add New Person
+
+### Basic Information
+- **ID:** UC-002
+- **Name:** Add New Person to Family Tree
+- **Priority:** High
+- **Complexity:** Medium
+- **Related User Story:** US-001
+
+### Actors
+- **Primary:** Authenticated User (Family Historian)
+
+### Preconditions
+- User is logged in
+- User has permission to edit tree
+
+### Postconditions
+- **Success:** New person record created in database
+- **Failure:** User notified of validation errors
+
+### Main Success Scenario
+1. User clicks "Add Person" button
+2. System displays "Add Person" form
+3. User enters first name (required)
+4. User enters middle name(s) (optional)
+5. User enters last name (required)
+6. User enters suffix (optional - Jr., Sr., III, etc.)
+7. User selects gender (optional)
+8. User enters birth date (day, month, year - all optional)
+9. User selects birth date qualifier (Exact, About, Before, After, Between)
+10. User enters birth place (optional)
+11. User checks "Deceased" if applicable
+12. If deceased, user enters death date and place
+13. User selects death date qualifier
+14. User enters biographical notes (optional)
+15. User sets privacy level (Public, Family, Private)
+16. User clicks "Save" button
+17. System validates required fields present
+18. System validates date logic (death after birth)
+19. System validates date formats
+20. System generates unique person ID
+21. System saves person record to database
+22. System displays success message
+23. System navigates to person detail page
+
+### Alternative Flows
+
+#### 17a: Required Fields Missing
+- 17a1. System highlights missing fields in red
+- 17a2. System displays error message: "Please complete required fields"
+- 17a3. User completes missing fields
+- 17a4. Return to step 16
+
+#### 18a: Invalid Date Logic
+- 18a1. System displays error: "Death date cannot be before birth date"
+- 18a2. User corrects dates
+- 18a3. Return to step 16
+
+#### 18b: Birth Date After Death Date (Parent Check)
+- 18b1. System warns: "Person's birth is after their child's birth. Continue?"
+- 18b2. If user confirms, continue to step 19
+- 18b3. If user cancels, return to step 8
+
+#### 19a: Invalid Date Format
+- 19a1. System displays error: "Invalid date format. Use MM/DD/YYYY"
+- 19a2. User corrects date format
+- 19a3. Return to step 16
+
+#### 23a: User Wants to Add Another Person
+- 23a1. User clicks "Add Another Person"
+- 23a2. Return to step 2
+
+### Exception Flows
+
+#### E1: Database Connection Lost
+- E1.1. System displays: "Connection error. Your data has been saved locally."
+- E1.2. System saves form data to browser storage
+- E1.3. When connection restored, system prompts: "Resume saving?"
+- E1.4. Return to step 17
+
+#### E2: User Cancels Entry
+- E2.1. User clicks "Cancel" button
+- E2.2. System prompts: "Discard unsaved changes?"
+- E2.3. If confirmed, navigate to previous page
+- E2.4. If cancelled, return to current form
+
+### Business Rules
+- BR-010: First name and last name are required minimum
+- BR-011: Living persons default to "Private" privacy level
+- BR-012: Deceased persons default to "Public" privacy level
+- BR-013: Birth date must be before death date
+- BR-014: Person must be born before their children
+- BR-015: Date qualifiers affect search and reporting behavior
+
+### Special Requirements
+- SR-010: Form must support keyboard navigation
+- SR-011: Auto-save draft every 60 seconds to prevent data loss
+- SR-012: Place fields should support autocomplete (future enhancement)
+- SR-013: Date fields should use accessible date picker
+
+### Frequency of Use
+- Expected: 10-50 persons added per user session
+
+---
+
+## UC-003: Establish Parent-Child Relationship
+
+### Basic Information
+- **ID:** UC-003
+- **Name:** Establish Parent-Child Relationship
+- **Priority:** High
+- **Complexity:** High
+- **Related User Story:** US-006
+
+### Actors
+- **Primary:** Authenticated User (Family Historian)
+- **Secondary:** Duplicate Detection Service
+
+### Preconditions
+- User is logged in
+- At least two person records exist
+- User has edit permission
+
+### Postconditions
+- **Success:** Parent-child relationship created and validated
+- **Failure:** User notified of validation errors
+
+### Main Success Scenario
+1. User views child person's detail page
+2. User clicks "Add Parent" button
+3. System displays parent selection dialog
+4. User enters parent name in search field
+5. System performs real-time search
+6. System displays matching persons
+7. User selects parent from results
+8. System displays relationship form
+9. User selects relationship type (Biological, Adopted, Foster, Step)
+10. User sets confidence level (High, Medium, Low, Unknown)
+11. System validates relationship rules
+12. System checks for date inconsistencies (parent born after child)
+13. System checks parent age at child's birth
+14. If parent very young (<14) or very old (>60), system displays warning
+15. User reviews warning and confirms or cancels
+16. System creates relationship record
+17. System updates both person records
+18. System recalculates family tree structure
+19. System displays success message
+20. System updates person detail page to show new parent
+
+### Alternative Flows
+
+#### 6a: No Matching Persons Found
+- 6a1. System displays "No matches found"
+- 6a2. System offers "Create New Person" button
+- 6a3. If user clicks, launch UC-002 (Add New Person)
+- 6a4. After person created, return to step 7
+
+#### 6b: Multiple Close Matches
+- 6b1. System displays potential duplicates warning
+- 6b2. System shows "Are these the same person?" comparison
+- 6b3. User can merge duplicates (UC-006) or proceed
+- 6b4. Return to step 7
+
+#### 12a: Parent Born After Child
+- 12a1. System displays error: "Parent birth date is after child's birth"
+- 12a2. System shows dates side-by-side
+- 12a3. System offers to correct dates
+- 12a4. User can edit parent's birth date, child's birth date, or cancel
+- 12a5. Return to step 11
+
+#### 12b: Parent Died Before Child Born
+- 12b1. System displays error: "Parent died before child was born"
+- 12b2. System shows dates side-by-side
+- 12b3. User can correct dates or cancel
+- 12b4. Return to step 11
+
+#### 13a: Parent Age Warning
+- 13a1. System calculates parent age at child's birth
+- 13a2. If age < 14 or > 60, display warning
+- 13a3. System shows: "Parent would have been [X] years old. Continue?"
+- 13a4. User can confirm (proceed to step 16) or cancel (return to step 11)
+
+#### 16a: Relationship Already Exists
+- 16a1. System detects duplicate relationship
+- 16a2. System displays: "This relationship already exists"
+- 16a3. System shows existing relationship details
+- 16a4. User can view or cancel
+- 16a5. Use case ends
+
+### Exception Flows
+
+#### E1: Creating Circular Relationship
+- E1.1. System detects person would become their own ancestor
+- E1.2. System displays: "This would create an invalid family tree loop"
+- E1.3. System prevents relationship creation
+- E1.4. Use case ends
+
+#### E2: Biological Parent Limit Exceeded
+- E2.1. System detects child already has 2 biological parents
+- E2.2. System displays: "Child already has 2 biological parents"
+- E2.3. System suggests changing relationship type to Step/Adopted
+- E2.4. User can change type or cancel
+- E2.5. Return to step 9
+
+### Business Rules
+- BR-020: Each person can have maximum 2 biological parents
+- BR-021: Parent must be born before child
+- BR-022: Parent must be alive (or death date after) child's birth
+- BR-023: Minimum parent age at birth is 12 years (with warning)
+- BR-024: Maximum parent age at birth is 65 years (with warning)
+- BR-025: Step and adopted relationships bypass biological parent limit
+- BR-026: Relationship changes are logged in audit trail
+
+### Special Requirements
+- SR-020: Real-time search must respond within 500ms
+- SR-021: Date validation must provide specific error messages
+- SR-022: Warnings must be color-coded (yellow=warning, red=error)
+- SR-023: Must support undo within 5 minutes of creation
+
+### Frequency of Use
+- Expected: 5-20 relationships added per user session
+
+---
+
+## UC-004: Import GEDCOM File
+
+### Basic Information
+- **ID:** UC-004
+- **Name:** Import GEDCOM File
+- **Priority:** High
+- **Complexity:** Very High
+- **Related User Story:** US-012
+
+### Actors
+- **Primary:** Authenticated User
+- **Secondary:** GEDCOM Parser Service, Duplicate Detection Service
+
+### Preconditions
+- User is logged in
+- User has valid GEDCOM file (.ged)
+- File size under 50MB
+
+### Postconditions
+- **Success:** All valid records imported, relationships established
+- **Failure:** User notified of parsing errors with option to continue
+
+### Main Success Scenario
+1. User navigates to Import page
+2. System displays import interface
+3. User clicks "Select File" button
+4. User selects GEDCOM file from file system
+5. System validates file extension (.ged)
+6. System validates file size (< 50MB)
+7. System uploads file to server
+8. System displays progress indicator
+9. System parses GEDCOM file structure
+10. System validates GEDCOM format (5.5 or 5.5.1)
+11. System extracts individuals (INDI records)
+12. System extracts families (FAM records)
+13. System extracts events, notes, sources
+14. System runs duplicate detection on individuals
+15. System displays import preview screen showing:
+    - Total individuals found
+    - Total families found
+    - Potential duplicates (with comparison view)
+    - Missing data warnings
+    - Format issues
+16. User reviews preview
+17. User selects handling for duplicates (Skip, Merge, Import as New)
+18. User clicks "Confirm Import"
+19. System begins import transaction
+20. System creates person records
+21. System creates relationship records
+22. System creates event records
+23. System creates media records (if any)
+24. System associates children with families
+25. System validates all relationships
+26. System commits transaction
+27. System generates import summary report
+28. System displays summary:
+    - X individuals imported
+    - Y relationships created
+    - Z duplicates skipped
+    - Errors (if any)
+29. User clicks "View Imported Tree"
+30. System navigates to tree view filtered to imported persons
+
+### Alternative Flows
+
+#### 5a: Invalid File Type
+- 5a1. System displays error: "Please select a .ged file"
+- 5a2. Return to step 3
+
+#### 6a: File Too Large
+- 6a1. System displays error: "File exceeds 50MB limit"
+- 6a2. System suggests splitting file or contacting support
+- 6a3. Use case ends
+
+#### 10a: Invalid GEDCOM Format
+- 10a1. System displays error: "Invalid GEDCOM format"
+- 10a2. System shows specific format issues found
+- 10a3. System offers to attempt import anyway (best effort)
+- 10a4. If user proceeds, continue with warnings
+- 10a5. Otherwise, use case ends
+
+#### 14a: Many Duplicates Detected
+- 14a1. System shows list of potential duplicates
+- 14a2. User can review each one individually
+- 14a3. User selects action per duplicate
+- 14a4. Return to step 18
+
+#### 17a: User Chooses to Merge Duplicates
+- 17a1. For each duplicate pair, system shows comparison
+- 17a2. User selects which data to keep
+- 17a3. System merges records
+- 17a4. Continue to step 18
+
+#### 25a: Relationship Validation Fails
+- 25a1. System logs invalid relationships
+- 25a2. System includes in error report
+- 25a3. System skips invalid relationships
+- 25a4. Continue to step 26
+
+#### 27a: Import Contains Errors
+- 27a1. Summary includes error section
+- 27a2. User can download detailed error log
+- 27a3. Partially successful import still saved
+- 27a4. Continue to step 29
+
+### Exception Flows
+
+#### E1: Import Transaction Fails
+- E1.1. System rolls back all changes
+- E1.2. System displays: "Import failed. No data was changed."
+- E1.3. System logs error details
+- E1.4. User can retry or cancel
+- E1.5. Use case ends
+
+#### E2: User Cancels Import During Processing
+- E2.1. System stops processing
+- E2.2. System rolls back partial import
+- E2.3. System displays: "Import cancelled"
+- E2.4. Use case ends
+
+#### E3: GEDCOM Contains Malicious Code
+- E3.1. Security scan detects malicious content
+- E3.2. System blocks import
+- E3.3. System logs security incident
+- E3.4. System notifies user: "File rejected for security reasons"
+- E3.5. Use case ends
+
+### Business Rules
+- BR-040: Only GEDCOM 5.5 and 5.5.1 formats supported
+- BR-041: Maximum file size is 50MB
+- BR-042: Duplicate detection uses name + birth date + birth place
+- BR-043: Invalid relationships are skipped, not failed
+- BR-044: Import operations are fully transactional
+- BR-045: User can undo entire import within 1 hour
+- BR-046: Imported records are tagged with import source and date
+
+### Special Requirements
+- SR-040: Import progress must update every 2 seconds
+- SR-041: Large imports (>1000 people) should be processed async
+- SR-042: User must be able to cancel import at any time
+- SR-043: System must handle character encoding (UTF-8, ASCII, ANSEL)
+- SR-044: Import should not block other users
+
+### Frequency of Use
+- Expected: 1-2 times per user (initial import + occasional updates)
+
+---
+
+## UC-005: Search for Person
+
+### Basic Information
+- **ID:** UC-005
+- **Name:** Search for Person in Family Tree
+- **Priority:** High
+- **Complexity:** Medium
+- **Related User Story:** US-004
+
+### Actors
+- **Primary:** Authenticated User
+
+### Preconditions
+- User is logged in
+- At least one person record exists in database
+
+### Postconditions
+- **Success:** Relevant search results displayed
+- **Failure:** Empty results with suggestions
+
+### Main Success Scenario
+1. User enters search term in search box (any page)
+2. System performs real-time search as user types
+3. System searches across: first name, middle name, last name, maiden name
+4. System applies fuzzy matching for typos
+5. System ranks results by relevance
+6. System displays top 10 results in dropdown showing:
+   - Full name
+   - Birth year
+   - Death year (if deceased)
+   - Thumbnail photo (if available)
+7. User can click result to navigate to person detail page
+8. OR user presses Enter to see full results page
+9. System displays full search results page with:
+   - All matching persons
+   - Filters sidebar (date range, living/deceased, gender)
+   - Sort options (relevance, name, birth date)
+10. User can apply filters
+11. System updates results based on filters
+12. User clicks on person card
+13. System navigates to person detail page
+
+### Alternative Flows
+
+#### 2a: No Results Found
+- 2a1. System displays "No matches found"
+- 2a2. System shows search suggestions:
+  - "Did you mean [similar name]?"
+  - "Try searching with fewer letters"
+- 2a3. User can revise search
+- 2a4. Return to step 1
+
+#### 10a: User Applies Date Range Filter
+- 10a1. User selects "Born between" date range
+- 10a2. System filters results to people born in range
+- 10a3. System updates result count
+- 10a4. Continue to step 12
+
+#### 10b: User Applies Living/Deceased Filter
+- 10b1. User selects "Living only" or "Deceased only"
+- 10b2. System filters results accordingly
+- 10b3. Results update immediately
+- 10b4. Continue to step 12
+
+#### 10c: User Applies Multiple Filters
+- 10c1. User selects multiple filters
+- 10c2. System applies AND logic between filters
+- 10c3. Result count may be very small or zero
+- 10c4. If zero results, suggest removing a filter
+- 10c5. Continue to step 12
+
+### Exception Flows
+
+#### E1: Search Service Timeout
+- E1.1. System displays: "Search taking longer than expected..."
+- E1.2. System continues search in background
+- E1.3. When complete, results appear
+- E1.4. If exceeds 10 seconds, display error
+
+### Business Rules
+- BR-050: Search respects privacy settings (users only see what they have permission to view)
+- BR-051: Living persons may be excluded from results based on privacy
+- BR-052: Search uses partial matching (minimum 2 characters)
+- BR-053: Results limited to 100 for performance
+- BR-054: Search is case-insensitive
+
+### Special Requirements
+- SR-050: Real-time search must respond within 300ms
+- SR-051: Full search page must load within 1 second
+- SR-052: Must work with keyboard navigation only
+- SR-053: Search should highlight matched terms in results
+
+### Frequency of Use
+- Expected: 20-50 searches per user session
+
+---
+
+## UC-006: Merge Duplicate Persons
+
+### Basic Information
+- **ID:** UC-006
+- **Name:** Merge Duplicate Person Records
+- **Priority:** Medium
+- **Complexity:** Very High
+- **Related User Story:** US-020
+
+### Actors
+- **Primary:** Authenticated User
+
+### Preconditions
+- User is logged in
+- At least two person records exist
+- User suspects or system detected duplicates
+
+### Postconditions
+- **Success:** Duplicate records merged, one record remains with combined data
+- **Failure:** User cancels or validation prevents merge
+
+### Main Success Scenario
+1. User views person detail page OR duplicate detection report
+2. User clicks "Merge with..." button
+3. System displays person search dialog
+4. User searches for duplicate person
+5. User selects suspected duplicate
+6. System displays side-by-side comparison showing:
+   - All fields from both records
+   - Differences highlighted
+   - Relationships for both
+   - Media/documents for both
+   - Edit history
+7. System calculates similarity score (0-100%)
+8. If score > 80%, system recommends merge
+9. User reviews comparison
+10. User selects which data to keep for each field (radio buttons)
+11. User selects primary record (which ID to keep)
+12. User can manually edit any field before merge
+13. User clicks "Confirm Merge"
+14. System prompts: "This cannot be undone. Continu
