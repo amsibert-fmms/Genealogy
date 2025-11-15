@@ -1,131 +1,175 @@
-# 🌿 GeneaX Features
-
-## Overview
-**GeneaX** combines Django’s flexibility with the structured power of the **GEDCOM X** specification to build a verifiable and interoperable genealogy platform.  
-This document outlines current and planned features, grouped by core functionality and development phase.
+# GeneaX Features
+This document summarizes the current, planned, and future features of the GeneaX platform.  
+All features are organized to align with the chapter structure defined in `MASTER_OUTLINE.md`.
 
 ---
 
-## 🧩 Core Features
+## 1. Overview
+GeneaX combines a modern Django architecture with the structured genealogical guidance of GEDCOM X.  
+Features are grouped according to the major domain areas (Chapters 1–6) and categorized by development stage.
 
-### 1. **GEDCOM X Data Management**
-- Full CRUD for all GEDCOM X entities:  
-  `Person`, `Relationship`, `Fact`, `Event`, `PlaceDescription`, `SourceDescription`, `Document`.  
-- Import/export of GEDCOM X JSON-LD files.  
-- Schema validation with clear error reporting.  
-- API endpoints for external system integration.
-
-🧠 *This is the backbone of GeneaX — the data engine that keeps your ancestors behaving like structured data, not chaos incarnate.*
+Development stages:
+- **Implemented** — Available in the current system  
+- **Planned** — Defined in design documents; implementation pending  
+- **Future** — Conceptual or exploratory features  
 
 ---
 
-### 2. **Book & Family Cross-Reference System**
-- Each person or family can include a Book ID reference (e.g. JH12:1234), representing the   numbering system used in community genealogy books.
-- CrossReference model links people across multiple publications or editions.
-- Supports roles within family listings (e.g. child, wife, spouse, in-law).
-- Allows bidirectional references between family entries (e.g. JH12:1234 child ↔ JH12:6789 wife).
-- Enables direct search and lookup by book or family ID.
-- Fully integrated with the Proof Standard and Relationship Resolution systems.
+# 2. Chapter-Aligned Features
 
-📖 *Because “see family #1234” deserves to mean something in your database.*
+## Chapter 1 — Person
+### Implemented
+- Basic person entity support (Tier 3)  
+- Identity attributes: names, gender, life span fields  
+- CRUD operations through Django admin and API  
 
----
+### Planned
+- Alternate names and name types  
+- Person merging and duplicate detection  
+- Person timelines (integration with Events)  
 
-### 3. **Proof & Evidence System**
-- Integration of the **GeneaX Proof Standard (GXPS)**.  
-- Confidence ratings for each claim (`certain`, `probable`, `possible`, `speculative`).  
-- ProofStatements linking claims to sources, analysis, and conflicts.  
-- Visual indicators for low-confidence or unverified assertions.  
-- Validation checks that ensure every relationship has a proof reference.
-
-💬 *Because "family lore" isn’t data until it’s verified.*
+### Future
+- Identity resolution across imported GEDCOM X sources
 
 ---
 
-### 4. **Data Visualization**
-- Interactive family tree display (zoom, pan, expand, collapse).  
-- Timeline view of life events and relationships.  
-- Relationship graph visualization using D3.js or Cytoscape.  
-- Geographical map of historical events (Leaflet).  
+## Chapter 2 — Event
+### Implemented
+- Event model structure aligned with Tier 2  
+- Event types, dates, places, and participants  
+- API creation and retrieval
 
-🎨 *So your data can look impressive while you pretend you’re not debugging JavaScript.*
+### Planned
+- Event role classification  
+- Event place normalization  
+- Multi-date interpretations (e.g., ranges, approximations)
 
----
-
-### 5. **Search & Discovery**
-- Full-text and filtered search for people, events, and sources.  
-- Phonetic (Soundex / Metaphone) surname matching.  
-- Fuzzy duplicate detection for potential record merges.  
-- Smart query builder for power users.
-
-🔍 *Because your 3rd great-grandfather might be hiding behind a spelling error.*
+### Future
+- Event visualizations and chronological graphs
 
 ---
 
-### 6. **Import / Export / Interoperability**
-- GEDCOM X JSON-LD import/export (core).  
-- Legacy GEDCOM 5.5.1 converter (optional).  
-- CSV import for quick testing.  
-- API endpoint for bulk data exchange.  
+## Chapter 3 — Relationship
+### Implemented
+- Support for essential relationship types (parent–child, spouse)  
+- Validation rules for allowable structures  
 
-🔁 *For connecting your better-designed app to everyone else’s worse one.*
+### Planned
+- Temporal bounds for relationships  
+- Extended relationship types (guardian, adoptive, sibling)  
+- Relationship conflict detection
 
----
-
-### 7. **User Accounts & Collaboration**
-- Django-based authentication system.  
-- Personal “workspaces” for building private family trees.  
-- Shared project editing with role-based permissions.  
-- Revision history per record (audit trail).  
-
-👥 *Because genealogy is teamwork… until someone edits the wrong grandma.*
+### Future
+- Graph-based kinship calculations
 
 ---
 
-### 8. **Validation & Quality Tools**
-- Schema validation for GEDCOM X compliance.  
-- Proof integrity checks (missing sources, unresolved conflicts).  
-- Research completeness dashboard.  
-- Visual indicators for unverified or incomplete data.  
+## Chapter 4 — Sources, Citations, and Facts
+### Implemented
+- SourceDescription structure (Tier 2)  
+- Basic citation support  
+- Fact model design in DATA_MODELS
 
-📊 *A gentle reminder that your data is messy.*
+### Planned
+- Source ingestion and structured extraction workflows  
+- Citation-level evidence assessment  
+- Fact-level confidence scoring  
 
----
-
-### 9. **Customization & UI**
-- Tailwind CSS framework with a fully customizable theme.  
-- Light/dark mode toggle.  
-- Configurable layout and typography via CSS variables.  
-- Mobile-friendly templates for editing on the go.  
-
-🎨 *Change colors, not code.*
+### Future
+- OCR-assisted record import  
+- Automated metadata extraction
 
 ---
 
-## 🧾 Feature Roadmap
+## Chapter 5 — Claims, Conclusions, and Proof
+### Implemented
+- ProofStatement model (Tier 2)  
+- Conceptual reasoning framework defined in `PROOF_STANDARD.md`
 
-| Phase | Focus | Description | Status |
-|-------|--------|-------------|--------|
-| **1** | Core Models | Base GEDCOM X entities and CRUD | ⏳ Planned |
-| **2** | Proof System | GXPS integration and confidence tracking | ⏳ Planned |
-| **3** | Import/Export | GEDCOM X JSON-LD parser and exporter | ⏳ Planned |
-| **4** | Visualization | Family trees, timelines, maps | ⏳ Planned |
-| **5** | Collaboration | Multi-user editing and permissions | ⏳ Planned |
-| **6** | Interop Layer | API and legacy GEDCOM compatibility | ⏳ Planned |
-| **7** | UI Theming | Customizable styles and dark mode | ⏳ Planned |
+### Planned
+- Conclusion model implementation  
+- Multi-citation claims  
+- Integrated evidence evaluation workflow  
 
-### 🕳️ Project Stage:
-- *“Currently existing primarily in Markdown and hubris.”*
-
----
-
-## 🔮 Future Ideas (Nice-to-Haves)
-- AI-assisted duplicate resolution and entity merging.  
-- Historical place name normalization.  
-- Versioned record provenance and diff viewer.  
-- Integration with FamilySearch or WikiTree APIs.  
-- Timeline animations (because why not).  
+### Future
+- Semi-automated narrative generation  
+- Conflict analysis between competing conclusions  
 
 ---
 
-*“Features are promises to your future self — be kind, or at least realistic.”*
+## Chapter 6 — Numbering, Appearances, and Cross-References
+### Implemented
+- Basic CrossReference model  
+- Support for external numbering schemes
+
+### Planned
+- FamilyAppearance model implementation  
+- Publication rendering and structured numbering generation  
+
+### Future
+- Export to book formats (including numbering systems and appearances)
+
+---
+
+# 3. System-Level Features
+
+## 3.1 Data Interchange
+### Implemented
+- GEDCOM X import/export (baseline mappings)
+
+### Planned
+- Full GEDCOM X JSON-LD compliance  
+- Import validation and transformation pipeline definitions
+
+### Future
+- Integration with FamilySearch or WikiTree APIs
+
+---
+
+## 3.2 API and Integration
+### Implemented
+- Django REST Framework endpoints for core models  
+- Basic serializers for Chapters 1–4  
+- Token-based authentication
+
+### Planned
+- Comprehensive DRF endpoint coverage  
+- Schema-first API documentation  
+- Versioned API design  
+
+### Future
+- GraphQL endpoint
+
+---
+
+## 3.3 Developer Tools
+### Implemented
+- Local development configuration  
+- Model-driven architecture compatible with Tier 2 design  
+- Unit test scaffolding
+
+### Planned
+- Factory sets for models  
+- Validation and reasoning workflow tests  
+
+### Future
+- CLI utilities for bulk import/export and data inspection
+
+---
+
+# 4. Future Exploration
+The following ideas are speculative and not yet part of the roadmap:
+
+- Automated duplicate detection using machine learning  
+- Historical place normalization service  
+- Versioned record provenance with diff viewer  
+- Visualization tools (timeline animations, relationship heatmaps)
+
+---
+
+# 5. References
+- `MASTER_OUTLINE.md` — conceptual framework  
+- `DATA_MODELS.md` — logical and implementation details  
+- `VALIDATION_RULES.md` — constraints and integrity requirements  
+- `PROOF_STANDARD.md` — evidence and reasoning model  
+- `GEDCOMX_COMPLIANCE.md` — alignment with the GEDCOM X specification
